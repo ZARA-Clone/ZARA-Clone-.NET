@@ -22,10 +22,10 @@ namespace E_CommerceProject.WebAPI.Controllers
             _logger = logger;
         }
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BrandDto))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BrandReadOnlyDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<BrandDto>> Get(int? id)
+        public async Task<ActionResult<BrandReadOnlyDto>> Get(int? id)
         {
             if(id == null)
             {
@@ -40,5 +40,95 @@ namespace E_CommerceProject.WebAPI.Controllers
             }
             return Ok(item);
         }
+
+        [HttpGet]
+        public async Task<ActionResult<List<BrandReadOnlyDto>>> Get()
+        {
+            _logger.LogInformation($"Get all brands");
+            var items = await _brandsService.GetAll();
+            return items;
+        }
+        [HttpPost]
+        public async Task<ActionResult<BrandDto>> Create(BrandDto brand)
+        {
+            _logger.LogInformation($"Creating new brand.");
+            var result = await _brandsService.Add(brand);
+            if (result.IsSuccess)
+            {
+                _logger.LogInformation($"Brand has been added with id {brand.Id}");
+                return CreatedAtAction(nameof(Get), new { id = brand.Id }, brand);
+            }
+            else
+            {
+                _logger.LogError($"Adding brand not valid with validation errors {result}");
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error);
+                }
+                return BadRequest(ModelState);
+            }
+        }
+        [HttpPut("{id}")]
+        public async Task<ActionResult<BrandDto>> Edit(int id, BrandDto brandDto)
+        {
+            _logger.LogInformation($"Updating brand with id: {id}");
+            if (id != brandDto.Id)
+            {
+                _logger.LogWarning($"Bad request so id {id} doesn't match object Id {brandDto.Id}");
+                return BadRequest();
+            }
+            try
+            {
+                var response = await _brandsService.Edit(id, brandDto);
+                if (response.IsSuccess)
+                {
+                    _logger.LogInformation($"Brand with id {id} has been updated");
+                    return NoContent();
+                }
+                else
+                {
+                    _logger.LogError($"updating brand has been failed with errors {response.Errors}");
+                    foreach (var error in response.Errors)
+                    {
+                        ModelState.AddModelError("", error);
+                    }
+                    return BadRequest(ModelState);
+                }
+            }
+            catch (ArgumentNullException ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return NotFound();
+            }
+        }
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            _logger.LogInformation($"Deleting brand with id {id}");
+            try
+            {
+                var response = await _brandsService.Delete(id);
+                if (response.IsSuccess)
+                {
+                    _logger.LogWarning($"Brand with id {id} has been deleted");
+                    return NoContent();
+                }
+                else
+                {
+                    _logger.LogError($"Deleting brand with id {id} has been failed with errors{response.Errors}");
+                    foreach (var error in response.Errors)
+                    {
+                        ModelState.AddModelError("", error);
+                    }
+                    return BadRequest(ModelState);
+                }
+            }
+            catch (ArgumentNullException ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return NotFound();
+            }
+        }
     }
+
 }

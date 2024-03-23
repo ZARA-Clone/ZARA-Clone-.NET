@@ -1,6 +1,6 @@
 ﻿using E_CommerceProject.Infrastructure.Context;
 using E_CommerceProject.Infrastructure.Repositories.Brands;
-using Microsoft.EntityFrameworkCore;
+using E_CommerceProject.Infrastructure.Repositories.Products;
 
 namespace E_CommerceProject.Infrastructure.Core.Base
 {
@@ -8,16 +8,19 @@ namespace E_CommerceProject.Infrastructure.Core.Base
     {
         private readonly ECommerceContext _dbContext;
         private readonly IBrandRepository _brandRepository;
-
-        //protected DbContext DbContext { get; }
+        private readonly IProductsRepository _productsRepository;
 
         public IBrandRepository BrandRepository => _brandRepository;
 
+        public IProductsRepository ProductsRepository => _productsRepository;
+
         public UnitOfWorkAsync(ECommerceContext dbContext
-            , IBrandRepository brandRepository)
+            , IBrandRepository brandRepository
+            , IProductsRepository productsRepository)
         {
             _dbContext = dbContext;
             _brandRepository = brandRepository;
+            _productsRepository = productsRepository;
         }
 
 

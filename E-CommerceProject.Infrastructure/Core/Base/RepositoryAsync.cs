@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using E_CommerceProject.Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace E_CommerceProject.Infrastructure.Core.Base
 {
     public class RepositoryAsync<T, TKey> : ReadonlyRepositoryAsync<T, TKey>, IRepositoryAsync<T, TKey>
         where T : class
     {
-        public RepositoryAsync(DbContext dbContext) : base(dbContext)
+        public RepositoryAsync(ECommerceContext dbContext) : base(dbContext)
         {
         }
 
