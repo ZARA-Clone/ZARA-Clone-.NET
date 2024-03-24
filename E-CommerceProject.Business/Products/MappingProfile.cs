@@ -8,12 +8,13 @@ namespace E_CommerceProject.Business.Products
     {
         public MappingProfile()
         {
-            CreateMap<string, ProductImage>()
-                .ForMember(dest => dest.Url, opt => opt.MapFrom(src => src));
-
             CreateMap<Product, ProductDto>()
+                .ForMember(c => c.ImageUrls, opt => opt.MapFrom(c => c.ProductImages.Select(img => img.Url)))
+                .ForMember(c => c.BrandName, opt => opt.MapFrom(c => c.Brand.Name))
                 .ReverseMap()
-                .ForMember(c => c.Id, opt =>opt.Ignore());
+                .ForMember(c => c.Id, opt => opt.Ignore())
+                .ForMember(c => c.Brand, opt => opt.Ignore())
+                .ForMember(c => c.ProductImages, opt => opt.Ignore());
 
 
         }

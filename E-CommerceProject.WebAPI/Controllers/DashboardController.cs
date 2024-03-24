@@ -4,29 +4,26 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace E_CommerceProject.WebAPI.Controllers
 {
-    [Route("/admin/api/[controller]")]
+    [Route("/api/[controller]")]
     [ApiController]
-    public class AdminControllers : ControllerBase
+    public class DashboardController : ControllerBase
     {
         private readonly IProductsService _productsService;
-        private readonly ILogger<AdminControllers> _logger;
+        private readonly ILogger<DashboardController> _logger;
 
-        public AdminControllers(IProductsService productsService
-            , ILogger<AdminControllers> logger)
+        public DashboardController(IProductsService productsService
+            , ILogger<DashboardController> logger)
         {
             _productsService = productsService;
             _logger = logger;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ProductDto>>> Get(string? name, int? brandId, decimal? minPrice
-           , decimal? maxPrice, int? rating, int pageIndex = 0, int pageSize = 10)
+        public async Task<ActionResult<List<ProductDto>>> Get()
         {
-            _logger.LogInformation($"Get products with brand '{brandId}'," +
-               $" min price '{minPrice}',  max price '{maxPrice}', page index '{pageIndex}' and page size '{pageSize}'.");
-            var result = await _productsService.Get(name, brandId, minPrice, maxPrice, rating, pageIndex, pageSize);
-            _logger.LogInformation($"Get '{result.items.Count}' products from '{result.totalItemsCount}'.");
-            return result.items;
+            _logger.LogInformation($"Get all products");
+            var items = await _productsService.GetAll();
+            return items;
         }
 
         [HttpGet("{id}")]

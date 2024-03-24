@@ -42,8 +42,13 @@ namespace E_CommerceProject.Business.Products
 
         public async Task<ServiceResponse> Add(ProductDto productDto)
         {
+
             var newProduct = _mapper.Map<Product>(productDto);
             // ToDo: handle images
+            foreach (var item in productDto.ImageUrls)
+            {
+                newProduct.ProductImages.Add(new ProductImage { Url = item });
+            }
 
             //validation
             var validationResult = await _validator.ValidateAsync(newProduct);
@@ -60,13 +65,19 @@ namespace E_CommerceProject.Business.Products
         {
             if (id <= 0) throw new ArgumentOutOfRangeException("id", "id cannot be negative or empty");
             if (productDto == null) throw new ArgumentNullException("productDto", "Product cannot be null");
-            
+
             var product = await _unitOfWork.ProductsRepository.GetByIdAsync(id);
             if (product == null)
                 throw new ArgumentNullException("id", $"There is no product with id: {id}");
 
             _mapper.Map(productDto, product);
-            var validationResult  = await  _validator.ValidateAsync(product);
+            //product.ProductImages.Clear();
+            // ToDo: handle images
+            foreach (var item in productDto.ImageUrls)
+            {
+                product.ProductImages.Add(new ProductImage { Url = item });
+            }
+            var validationResult = await _validator.ValidateAsync(product);
             if (!validationResult.IsValid)
                 return ServiceResponse.Fail(validationResult.Errors);
 
@@ -77,7 +88,7 @@ namespace E_CommerceProject.Business.Products
         public async Task<ServiceResponse> Delete(int id)
         {
             var product = await _unitOfWork.ProductsRepository.GetByIdAsync(id);
-            if(product == null)
+            if (product == null)
                 throw new ArgumentNullException("id", $"There is no product with id: {id}");
 
             await _unitOfWork.ProductsRepository.DeleteAsync(product);
