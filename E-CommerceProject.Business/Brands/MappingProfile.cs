@@ -8,9 +8,12 @@ namespace E_CommerceProject.Business.Brands
     {
         public MappingProfile()
         {
+            CreateMap<Brand, BrandReadOnlyDto>()
+                .ForMember(c => c.NoOfProducts, opt => opt.MapFrom(src => src.Products.Count()));
+
             CreateMap<Brand, BrandDto>()
-            .ReverseMap()
-            .ForMember(c => c.Id, opt => opt.Ignore());
+                .ReverseMap();
+
         }
     }
 }

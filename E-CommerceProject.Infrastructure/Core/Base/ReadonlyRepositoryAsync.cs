@@ -1,13 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using E_CommerceProject.Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace E_CommerceProject.Infrastructure.Core.Base
 {
     public class ReadonlyRepositoryAsync<T, TKey> : IReadonlyRepositoryAsync<T, TKey>
         where T : class
     {
-        private DbContext _dbContext;
-        protected DbContext DbContext => _dbContext;
-        public ReadonlyRepositoryAsync(DbContext dbContext)
+        private ECommerceContext _dbContext;
+        protected ECommerceContext DbContext => _dbContext;
+        public ReadonlyRepositoryAsync(ECommerceContext dbContext)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }

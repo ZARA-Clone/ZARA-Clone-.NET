@@ -27,5 +27,12 @@ namespace E_CommerceProject.Infrastructure.Repositories.Brands
                 .Include(c => c.Products)
                 .FirstOrDefaultAsync(c => c.Id == key);
         }
+
+        public Task<bool> IsNameExist(Brand entity)
+        {
+            return _dbContext.Set<Brand>()
+                .AnyAsync(c => c.Id != entity.Id
+                        && c.Name.Trim() == entity.Name.Trim());
+        }
     }
 }
