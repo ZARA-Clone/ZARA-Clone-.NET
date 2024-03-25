@@ -16,6 +16,8 @@ namespace E_CommerceProject.Business.Products
                 .ForMember(c => c.Brand, opt => opt.Ignore())
                 .ForMember(c => c.ProductImages, opt => opt.Ignore());
 
+            CreateMap<Product, AddProductDto>()
+                .ReverseMap();
 
         }
     }

@@ -1,5 +1,6 @@
 ﻿using E_CommerceProject.Business.Products.Dtos;
 using E_CommerceProject.Business.Products.Interfaces;
+using E_CommerceProject.WebAPI.Helper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_CommerceProject.WebAPI.Controllers
@@ -10,12 +11,15 @@ namespace E_CommerceProject.WebAPI.Controllers
     {
         private readonly IProductsService _productsService;
         private readonly ILogger<DashboardController> _logger;
+        private readonly IFileProvider _helper;
 
         public DashboardController(IProductsService productsService
-            , ILogger<DashboardController> logger)
+            , ILogger<DashboardController> logger
+            , IFileProvider helper)
         {
             _productsService = productsService;
             _logger = logger;
+            _helper = helper;
         }
 
         [HttpGet]
@@ -43,7 +47,7 @@ namespace E_CommerceProject.WebAPI.Controllers
             return Ok(item);
         }
         [HttpPost]
-        public async Task<ActionResult<ProductDto>> Create(ProductDto product)
+        public async Task<ActionResult<ProductDto>> Create(AddProductDto product)
         {
             _logger.LogInformation($"Creating new product.");
             var result = await _productsService.Add(product);
@@ -122,6 +126,26 @@ namespace E_CommerceProject.WebAPI.Controllers
                 _logger.LogError(ex.Message, ex);
                 return NotFound();
             }
+        }
+
+        [HttpPost]
+        [Route("upload")]
+        public async Task<ActionResult<List<string>>> Upload(List<IFormFile> files)
+        {
+            List<string> urls = new List<string>();
+            foreach (var file in files)
+            {
+                _helper.validatImage(file);
+                var newName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                var imagePaths = Path.Combine(Environment.CurrentDirectory, "Images");
+                var fullPath = Path.Combine(imagePaths, newName);
+                using var stream = new FileStream(fullPath, FileMode.Create);
+                await file.CopyToAsync(stream);
+
+                var url = $"{Request.Scheme}://{Request.Host}/Images/{newName}";
+                urls.Add(url);
+            }
+            return (urls);
         }
     }
 }

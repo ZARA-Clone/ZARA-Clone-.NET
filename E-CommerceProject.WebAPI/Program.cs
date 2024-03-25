@@ -3,6 +3,7 @@ using E_CommerceProject.Business.Products.ModelValidator;
 using E_CommerceProject.Business.Shared;
 using E_CommerceProject.Infrastructure.Context;
 using E_CommerceProject.Infrastructure.Shared;
+using E_CommerceProject.WebAPI.Helper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -44,6 +45,7 @@ namespace E_CommerceProject.WebAPI
             // register services to the container.
             builder.Services.AddRepositories();
             builder.Services.AddServices();
+            builder.Services.AddScoped<IFileProvider, FileProvider>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
