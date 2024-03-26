@@ -18,8 +18,6 @@ namespace E_CommerceProject.Business.Products.ModelValidator
                 .NotEmpty()
                 .GreaterThan(0);
                
-            RuleFor(c => c.Quantity)
-                .NotEmpty();
         }
     }
 }

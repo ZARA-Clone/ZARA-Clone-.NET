@@ -13,6 +13,7 @@ namespace E_CommerceProject.Business.Products
                 .ForMember(c => c.BrandName, opt => opt.MapFrom(c => c.Brand.Name))
                 .ReverseMap()
                 .ForMember(c => c.Id, opt => opt.Ignore())
+                .ForMember(c => c.BrandId, opt => opt.Ignore())
                 .ForMember(c => c.Brand, opt => opt.Ignore())
                 .ForMember(c => c.ProductImages, opt => opt.Ignore());
 

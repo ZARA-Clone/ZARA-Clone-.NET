@@ -4,6 +4,7 @@ using E_CommerceProject.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_CommerceProject.Infrastructure.Migrations
 {
     [DbContext(typeof(ECommerceContext))]
-    partial class ECommerceContextModelSnapshot : ModelSnapshot
+    [Migration("20240326150647_all")]
+    partial class all
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,80 +46,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Brands");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CategoryId = 1,
-                            Name = "Trousers"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CategoryId = 1,
-                            Name = "T-Shirts"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CategoryId = 1,
-                            Name = "Hoodies"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CategoryId = 1,
-                            Name = "Shorts"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CategoryId = 2,
-                            Name = "Dresses"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CategoryId = 2,
-                            Name = "Skirts"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CategoryId = 2,
-                            Name = "Jackets"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            CategoryId = 2,
-                            Name = "Blazers"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            CategoryId = 3,
-                            Name = "HoliDays Mood"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            CategoryId = 3,
-                            Name = "Swimwear"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            CategoryId = 3,
-                            Name = "Dresses"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            CategoryId = 3,
-                            Name = "Tops"
-                        });
                 });
 
             modelBuilder.Entity("E_CommerceProject.Models.Contact", b =>
@@ -167,23 +96,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Man"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Woman"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Kids"
-                        });
                 });
 
             modelBuilder.Entity("E_CommerceProject.Models.Models.Size", b =>
@@ -295,58 +207,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.HasIndex("BrandId");
 
                     b.ToTable("Products");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            BrandId = 1,
-                            Description = "test p1",
-                            Discount = 10m,
-                            Model = "M1",
-                            Name = "product1",
-                            Price = 1000m
-                        },
-                        new
-                        {
-                            Id = 2,
-                            BrandId = 1,
-                            Description = "test p2",
-                            Discount = 20m,
-                            Model = "M2",
-                            Name = "product2",
-                            Price = 2000m
-                        },
-                        new
-                        {
-                            Id = 3,
-                            BrandId = 2,
-                            Description = "test p3",
-                            Discount = 30m,
-                            Model = "M3",
-                            Name = "product3",
-                            Price = 3000m
-                        },
-                        new
-                        {
-                            Id = 4,
-                            BrandId = 3,
-                            Description = "test p4",
-                            Discount = 40m,
-                            Model = "M4",
-                            Name = "product4",
-                            Price = 4000m
-                        },
-                        new
-                        {
-                            Id = 5,
-                            BrandId = 3,
-                            Description = "test p5",
-                            Discount = 50m,
-                            Model = "M5",
-                            Name = "product5",
-                            Price = 5000m
-                        });
                 });
 
             modelBuilder.Entity("E_CommerceProject.Models.ProductImage", b =>
