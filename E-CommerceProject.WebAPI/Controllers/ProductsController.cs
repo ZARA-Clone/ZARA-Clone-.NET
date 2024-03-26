@@ -1,6 +1,10 @@
 ﻿using E_CommerceProject.Business.Products.Dtos;
 using E_CommerceProject.Business.Products.Interfaces;
+using E_CommerceProject.Infrastructure.Context;
+using E_CommerceProject.Models.Enums;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace E_CommerceProject.WebAPI.Controllers
 {
@@ -10,12 +14,14 @@ namespace E_CommerceProject.WebAPI.Controllers
     {
         private readonly IProductsService _productsService;
         private readonly ILogger<ProductsController> _logger;
+        private readonly ECommerceContext _context;
 
         public ProductsController(IProductsService productsService
-            , ILogger<ProductsController> logger)
+            , ILogger<ProductsController> logger , ECommerceContext context)
         {
             _productsService = productsService;
             _logger = logger;
+            _context = context ;
         }
 
         [HttpGet]
@@ -29,10 +35,10 @@ namespace E_CommerceProject.WebAPI.Controllers
             return result.items;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("product/{id}")]
         public async Task<ActionResult<ProductDto>> Get(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 _logger.LogWarning($"Invalid id parameter value {id}");
                 return BadRequest();
@@ -45,5 +51,37 @@ namespace E_CommerceProject.WebAPI.Controllers
             }
             return Ok(item);
         }
+
+
+        [HttpGet("{id}")]
+        public ActionResult GetById(int id)
+        {
+            var product = _context.Products.Include(p => p.Sizes)
+                .Include(p =>p.ProductImages)
+                .FirstOrDefault(p => p.Id == id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+            List<string> imageUrls = product.ProductImages
+                .Select(img => img.Url)
+                .ToList();
+            List<Sizeenum> sizes = product.Sizes
+                .Select(size => size.Name)
+                .ToList();
+            ProductDetailsDto PD = new ProductDetailsDto()
+            {
+                Id = product.Id,
+                Name = product.Name ,
+                Price = product.Price,
+                Description = product.Description,
+                Sizes = sizes
+            };
+            return Ok(PD);
+        }
+
     }
+
+   
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace E_CommerceProject.Models.Enums
 {
-    public enum Size
+    public enum Sizeenum
     {
         Small, Medium, Large, XLarge
     }

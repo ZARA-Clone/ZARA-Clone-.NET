@@ -17,5 +17,8 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\E-CommerceProject.Models\E-CommerceProject.Models.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Migrations\" />
+	</ItemGroup>
 
 </Project>
