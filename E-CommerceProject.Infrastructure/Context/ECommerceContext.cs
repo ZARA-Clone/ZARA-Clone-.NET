@@ -6,7 +6,6 @@ namespace E_CommerceProject.Infrastructure.Context
 {
     public class ECommerceContext : DbContext
     {
-
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
