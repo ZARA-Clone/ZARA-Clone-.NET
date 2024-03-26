@@ -9,7 +9,7 @@ namespace E_CommerceProject.Business.Products.Interfaces
             , decimal? maxPrice, int? rating, int pageIndex = 0, int pageSize = 10);
         Task<List<ProductDto>> GetAll();
         Task<ProductDto> GetById(int id);
-        Task<ServiceResponse> Add(ProductDto productDto);
+        Task<ServiceResponse> Add(AddProductDto productDto);
         Task<ServiceResponse> Edit(int id, ProductDto productDto);
         Task<ServiceResponse> Delete(int id);
     }

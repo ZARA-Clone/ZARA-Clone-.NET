@@ -40,9 +40,8 @@ namespace E_CommerceProject.Business.Products
             return _mapper.Map<ProductDto>(item);
         }
 
-        public async Task<ServiceResponse> Add(ProductDto productDto)
+        public async Task<ServiceResponse> Add(AddProductDto productDto)
         {
-
             var newProduct = _mapper.Map<Product>(productDto);
             // ToDo: handle images
             foreach (var item in productDto.ImageUrls)
