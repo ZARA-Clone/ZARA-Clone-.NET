@@ -67,7 +67,7 @@ namespace E_CommerceProject.WebAPI.Controllers
             List<string> imageUrls = product.ProductImages
                 .Select(img => img.Url)
                 .ToList();
-            List<Sizeenum> sizes = product.Sizes
+            List<SizeEnum> sizes = product.Sizes
                 .Select(size => size.Name)
                 .ToList();
             ProductDetailsDto PD = new ProductDetailsDto()
