@@ -33,11 +33,11 @@ namespace E_CommerceProject.Business.Products
             return _mapper.Map<List<ProductDto>>(items);
         }
 
-        public async Task<ProductDetailsDto> GetById(int id)
+        public async Task<ProductDto> GetById(int id)
         {
             if (id < 0) throw new ArgumentNullException("id", "id can not be negative");
             var item = await _unitOfWork.ProductsRepository.GetByIdAsync(id);
-            return _mapper.Map<ProductDetailsDto>(item);
+            return _mapper.Map<ProductDto>(item);
         }
 
         public async Task<ServiceResponse> Add(ProductDto productDto)
