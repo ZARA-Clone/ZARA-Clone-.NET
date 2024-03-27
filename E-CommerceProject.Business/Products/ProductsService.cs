@@ -95,14 +95,14 @@ namespace E_CommerceProject.Business.Products
             return ServiceResponse.Success();
         }
 
-        public async Task<(List<ProductDto> items, int totalItemsCount)> Get(string? name, int? brandId, decimal? minPrice
+        public async Task<PageList<ProductDto>> Get(string? name, int? brandId, decimal? minPrice
             , decimal? maxPrice, int? rating, int pageIndex = 0, int pageSize = 10)
         {
             _logger.LogInformation($"Get products with brand '{brandId}'," +
                 $" min price '{minPrice}',  max price '{maxPrice}', page index '{pageIndex}' and page size '{pageSize}'.");
             var result = await _unitOfWork.ProductsRepository.Get(name, brandId, minPrice, maxPrice, rating, pageIndex, pageSize);
             _logger.LogInformation($"Get '{result.items.Count}' products from '{result.totalItemsCount}'.");
-            return (_mapper.Map<List<ProductDto>>(result.items), result.totalItemsCount);
+            return new PageList<ProductDto>(_mapper.Map<List<ProductDto>>(result.items), pageIndex, pageSize, result.totalItemsCount);
         }
     }
 }
