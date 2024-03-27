@@ -68,8 +68,13 @@ namespace E_CommerceProject.WebAPI.Controllers
             List<string> imageUrls = product.ProductImages
                 .Select(img => img.Url)
                 .ToList();
-            List<SizeEnum> sizes = product.Sizes
-                .Select(size => size.Name)
+   
+            List<SizeQuantityDto> sizes = product.Sizes
+                .Select(size => new SizeQuantityDto
+                    {
+                        Size = size.Name,
+                        Quantity = size.Quantity
+                    })
                 .ToList();
             ProductDetailsDto PD = new ProductDetailsDto()
             {
@@ -78,7 +83,8 @@ namespace E_CommerceProject.WebAPI.Controllers
                 Price = product.Price,
                 Description = product.Description,
                 Images = imageUrls,
-                Sizes = sizes
+                Sizes = sizes,
+                Discount = product.Discount
             };
             return Ok(PD);
         }
