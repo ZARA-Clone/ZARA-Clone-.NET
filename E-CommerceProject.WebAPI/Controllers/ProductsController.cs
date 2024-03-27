@@ -57,7 +57,7 @@ namespace E_CommerceProject.WebAPI.Controllers
         public ActionResult GetById(int id)
         {
             var product = _context.Products.Include(p => p.Sizes)
-                .Include(p =>p.ProductImages)
+                .Include(p => p.ProductImages)
                 .FirstOrDefault(p => p.Id == id);
 
             if (product == null)
@@ -73,15 +73,17 @@ namespace E_CommerceProject.WebAPI.Controllers
             ProductDetailsDto PD = new ProductDetailsDto()
             {
                 Id = product.Id,
-                Name = product.Name ,
+                Name = product.Name,
                 Price = product.Price,
                 Description = product.Description,
+                Imgs = imageUrls,
                 Sizes = sizes
             };
             return Ok(PD);
         }
 
+
     }
 
-   
+
 }

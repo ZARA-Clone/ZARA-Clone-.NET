@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_CommerceProject.Infrastructure.Migrations
 {
     [DbContext(typeof(ECommerceContext))]
-    [Migration("20240326150647_all")]
-    partial class all
+    [Migration("20240327041656_m1")]
+    partial class m1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -46,6 +46,80 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Brands");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CategoryId = 1,
+                            Name = "Trousers"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CategoryId = 1,
+                            Name = "T-Shirts"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CategoryId = 1,
+                            Name = "Hoodies"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CategoryId = 1,
+                            Name = "Shorts"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CategoryId = 2,
+                            Name = "Dresses"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CategoryId = 2,
+                            Name = "Skirts"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CategoryId = 2,
+                            Name = "Jackets"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CategoryId = 2,
+                            Name = "Blazers"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CategoryId = 3,
+                            Name = "HoliDays Mood"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CategoryId = 3,
+                            Name = "Swimwear"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CategoryId = 3,
+                            Name = "Dresses"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CategoryId = 3,
+                            Name = "Tops"
+                        });
                 });
 
             modelBuilder.Entity("E_CommerceProject.Models.Contact", b =>
@@ -96,6 +170,23 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Man"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Woman"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Kids"
+                        });
                 });
 
             modelBuilder.Entity("E_CommerceProject.Models.Models.Size", b =>
@@ -278,6 +369,10 @@ namespace E_CommerceProject.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -338,9 +433,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.HasKey("UserId", "ProductId");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
 
                     b.ToTable("UserCarts");
                 });
@@ -480,8 +572,8 @@ namespace E_CommerceProject.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("E_CommerceProject.Models.User", "User")
-                        .WithOne("Cart")
-                        .HasForeignKey("E_CommerceProject.Models.UserCart", "UserId")
+                        .WithMany("Carts")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -541,8 +633,7 @@ namespace E_CommerceProject.Infrastructure.Migrations
 
             modelBuilder.Entity("E_CommerceProject.Models.User", b =>
                 {
-                    b.Navigation("Cart")
-                        .IsRequired();
+                    b.Navigation("Carts");
 
                     b.Navigation("Orders");
 

@@ -106,22 +106,15 @@ namespace E_CommerceProject.Infrastructure.Context
 
                 builder.Property(c => c.Role)
                        .IsRequired();
-                builder.HasOne(c => c.Cart)
+                builder.HasMany(c => c.Carts)
                         .WithOne(c => c.User)
-                        .HasForeignKey<UserCart>(c => c.UserId);
+                        .HasForeignKey(c => c.UserId);
             });
 
 
             modelBuilder.Entity<UserCart>(builder =>
             {
                 builder.HasKey(c => new { c.UserId, c.ProductId });
-
-                builder.Property(c => c.Quantity)
-                       .IsRequired();
-                
-                builder.HasOne(c => c.Product)
-                       .WithMany(c => c.UserCarts)
-                       .HasForeignKey(c => c.ProductId);
             });
 
             modelBuilder.Entity<WishList>(builder =>
