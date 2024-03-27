@@ -12,7 +12,7 @@ namespace E_CommerceProject.Models
         public string ZipCode {  get; set; }
         public string Password {  get; set; }
         public Role Role { get; set; }
-        public List<UserCart>  Carts { get; set; }
+        public List<UserCart> Carts { get; set; }
         public IEnumerable<Order> Orders { get; set; } = new HashSet<Order>();
         public IEnumerable<Review> Reviews { get; set; } = new HashSet<Review>();
         public WishList WishList { get; set; }

@@ -77,7 +77,7 @@ namespace E_CommerceProject.WebAPI.Controllers
                 Name = product.Name,
                 Price = product.Price,
                 Description = product.Description,
-                Imgs = imageUrls,
+                Images = imageUrls,
                 Sizes = sizes
             };
             return Ok(PD);
