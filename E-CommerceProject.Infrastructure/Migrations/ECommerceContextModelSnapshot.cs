@@ -418,6 +418,10 @@ namespace E_CommerceProject.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -478,9 +482,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.HasKey("UserId", "ProductId");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
 
                     b.ToTable("UserCarts");
                 });
@@ -620,8 +621,8 @@ namespace E_CommerceProject.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("E_CommerceProject.Models.User", "User")
-                        .WithOne("Cart")
-                        .HasForeignKey("E_CommerceProject.Models.UserCart", "UserId")
+                        .WithMany("Carts")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -681,8 +682,7 @@ namespace E_CommerceProject.Infrastructure.Migrations
 
             modelBuilder.Entity("E_CommerceProject.Models.User", b =>
                 {
-                    b.Navigation("Cart")
-                        .IsRequired();
+                    b.Navigation("Carts");
 
                     b.Navigation("Orders");
 

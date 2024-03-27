@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace E_CommerceProject.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class all : Migration
+    public partial class m1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -51,6 +53,7 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ZipCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Role = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -292,6 +295,35 @@ namespace E_CommerceProject.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Man" },
+                    { 2, "Woman" },
+                    { 3, "Kids" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Brands",
+                columns: new[] { "Id", "CategoryId", "Name" },
+                values: new object[,]
+                {
+                    { 1, 1, "Trousers" },
+                    { 2, 1, "T-Shirts" },
+                    { 3, 1, "Hoodies" },
+                    { 4, 1, "Shorts" },
+                    { 5, 2, "Dresses" },
+                    { 6, 2, "Skirts" },
+                    { 7, 2, "Jackets" },
+                    { 8, 2, "Blazers" },
+                    { 9, 3, "HoliDays Mood" },
+                    { 10, 3, "Swimwear" },
+                    { 11, 3, "Dresses" },
+                    { 12, 3, "Tops" }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Brands_CategoryId",
                 table: "Brands",
@@ -341,12 +373,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
                 name: "IX_UserCarts_ProductId",
                 table: "UserCarts",
                 column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserCarts_UserId",
-                table: "UserCarts",
-                column: "UserId",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_WishLists_ProductId",
