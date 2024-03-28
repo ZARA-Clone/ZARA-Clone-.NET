@@ -29,7 +29,7 @@ namespace E_CommerceProject.WebAPI.Controllers
         {
             _logger.LogInformation($"Get products with brand '{brandId}'," +
                $" min price '{minPrice}',  max price '{maxPrice}', page index '{pageIndex}' and page size '{pageSize}'.");
-            var result = await _productsService.Get(name, brandId, minPrice, maxPrice, rating, pageIndex, pageSize);
+            var result = await _productsService.Get(name, brandId, minPrice, maxPrice, pageIndex, pageSize);
             _logger.LogInformation($"Get '{result.Items.Count}' products from '{result.TotalCount}'.");
             return result;
         }

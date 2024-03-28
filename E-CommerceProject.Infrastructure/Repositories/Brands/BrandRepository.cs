@@ -19,6 +19,7 @@ namespace E_CommerceProject.Infrastructure.Repositories.Brands
         {
             return await _dbContext.Set<Brand>()
                 .Include(c => c.Products)
+                .OrderBy(c => c.Id)
                 .ToListAsync();
         }
         public override async Task<Brand?> GetByIdAsync(int key)
