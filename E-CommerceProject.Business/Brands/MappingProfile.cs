@@ -9,6 +9,7 @@ namespace E_CommerceProject.Business.Brands
         public MappingProfile()
         {
             CreateMap<Brand, BrandReadOnlyDto>()
+                .ForMember(c => c.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
                 .ForMember(c => c.NoOfProducts, opt => opt.MapFrom(src => src.Products.Count()));
 
             CreateMap<Brand, BrandDto>()

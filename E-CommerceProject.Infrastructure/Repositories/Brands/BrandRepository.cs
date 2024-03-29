@@ -14,10 +14,37 @@ namespace E_CommerceProject.Infrastructure.Repositories.Brands
             _dbContext = dbContext;
         }
 
+        public async Task<(List<Brand> items, int totalItemsCount)> Get(string? name
+            , int? categoryId, int pageIndex = 0, int pageSize = 10)
+        {
+            if (pageIndex < 0)
+                throw new ArgumentOutOfRangeException("pageIndex", "Page index can't be less than zero");
+            if (pageSize <= 0)
+                throw new ArgumentOutOfRangeException("pageSize", "Page size can't be less than zero");
+
+            var query = _dbContext.Set<Brand>()
+                .Include(c => c.Category)
+                .Include(c => c.Products)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(name))
+                query = query.Where(x => x.Name.Contains(name));
+            if (categoryId > 0)
+                query = query.Where(x => x.CategoryId == categoryId);
+
+            var totalItems = await query.CountAsync();
+            var items = await query.OrderBy(c => c.Id)
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalItems);
+        }
 
         public override async Task<List<Brand>> GetAllAsync()
         {
             return await _dbContext.Set<Brand>()
+                .Include(c => c.Category)
                 .Include(c => c.Products)
                 .OrderBy(c => c.Id)
                 .ToListAsync();
@@ -25,6 +52,7 @@ namespace E_CommerceProject.Infrastructure.Repositories.Brands
         public override async Task<Brand?> GetByIdAsync(int key)
         {
             return await _dbContext.Set<Brand>()
+                .Include(c => c.Category)
                 .Include(c => c.Products)
                 .FirstOrDefaultAsync(c => c.Id == key);
         }
