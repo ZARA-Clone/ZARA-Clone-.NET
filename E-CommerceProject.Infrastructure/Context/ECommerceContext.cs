@@ -16,7 +16,7 @@ namespace E_CommerceProject.Infrastructure.Context
         public DbSet<WishList> WishLists { get; set; }
         public DbSet<UserCart> UserCarts { get; set; }
         public DbSet<UserAddress> UserAddresses { get; set; }
-        public DbSet<User> Users { get; set; }
+        //public DbSet<User> Users { get; set; }
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Size> Sizes { get; set; }
@@ -94,21 +94,22 @@ namespace E_CommerceProject.Infrastructure.Context
 
             });
 
-            modelBuilder.Entity<User>(builder =>
+            modelBuilder.Entity<ApplicationUser>(builder =>
             {
-                builder.Property(c => c.Name)
-                       .IsRequired()
-                       .HasMaxLength(100);
+              
 
                 builder.Property(c => c.Email)
                        .IsRequired()
                        .HasMaxLength(200);
 
-                builder.Property(c => c.Role)
-                       .IsRequired();
+              
                 builder.HasMany(c => c.Carts)
                         .WithOne(c => c.User)
                         .HasForeignKey(c => c.UserId);
+                //Added to fix One-One Relation Error
+                builder.HasOne(c => c.WishList)
+                       .WithOne(c => c.User)
+                       .HasForeignKey<WishList>(c => c.UserId);
             });
 
 

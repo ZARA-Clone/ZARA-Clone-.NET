@@ -7,9 +7,12 @@ using E_CommerceProject.Infrastructure.Shared;
 using E_CommerceProject.Models.Models;
 using E_CommerceProject.WebAPI.Helper;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System.Text;
 
 namespace E_CommerceProject.WebAPI
 {
@@ -77,7 +80,26 @@ namespace E_CommerceProject.WebAPI
                 AddEntityFrameworkStores<ECommerceContext>();
 
 
-           // builder.Services.AddScoped<IUserRepository, UserRepository>();
+            // builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+
+
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false, // Set to true if you have an issuer
+                    ValidateAudience = false, // Set to true if you have an audience
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("your_secret_key_here"))
+                };
+            });
 
 
 

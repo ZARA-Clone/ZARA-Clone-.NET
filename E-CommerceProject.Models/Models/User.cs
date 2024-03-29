@@ -1,4 +1,4 @@
-﻿using E_CommerceProject.Models.Enums;
+﻿/*using E_CommerceProject.Models.Enums;
 using Microsoft.AspNetCore.Identity;
 
 namespace E_CommerceProject.Models
@@ -22,3 +22,4 @@ namespace E_CommerceProject.Models
         public WishList WishList { get; set; }
     }
 }
+*/

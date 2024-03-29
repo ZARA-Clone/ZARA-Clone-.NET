@@ -3,6 +3,10 @@ using E_CommerceProject.Models.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 
 namespace E_CommerceProject.WebAPI.Controllers
@@ -31,18 +35,21 @@ namespace E_CommerceProject.WebAPI.Controllers
             }
 
             ApplicationUser user = new ApplicationUser();
-              user.Email = newuser.Email;
-                   user.PhoneNumber = newuser.PhoneNumber;
-                    user.UserName= newuser.UserName;
-                    user.Country = newuser.country;
+            user.Email = newuser.Email;
+            user.PhoneNumber = newuser.PhoneNumber;
+            user.UserName= newuser.UserName;
+            user.Country = newuser.country;
+            
 
             var result = await _userManager.CreateAsync(user, newuser.Password);
 
             if (result.Succeeded)
             {
-                
 
-                return Ok();
+                var token = GenerateJwtToken(user);
+
+
+                return Ok(new { Token = token });
             }
             else
             {
@@ -50,11 +57,37 @@ namespace E_CommerceProject.WebAPI.Controllers
             }
         }
 
-        
 
 
-       
 
+
+        private string GenerateJwtToken(ApplicationUser user)
+        {
+            List<Claim> claims = new List<Claim>();
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
+            claims.Add(new Claim(ClaimTypes.Email, user.Email));
+
+
+            //secret key
+            string Key = "welcomeee to ecommerceee websiteee welcomeee to ecommerceee";
+
+            var secretkey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Key));
+
+            //create token 
+            var signer = new SigningCredentials(secretkey, SecurityAlgorithms.HmacSha256);
+
+
+            //generate token  //object
+            var token = new JwtSecurityToken(
+                claims: claims,
+                signingCredentials: signer,
+                expires: DateTime.Now.AddDays(5));
+
+
+            //encoding it
+            var stringtoken = new JwtSecurityTokenHandler().WriteToken(token);
+            return stringtoken;
+        }
 
 
     }
