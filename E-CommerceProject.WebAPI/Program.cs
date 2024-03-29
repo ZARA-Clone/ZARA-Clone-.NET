@@ -6,6 +6,7 @@ using E_CommerceProject.Infrastructure.Shared;
 using E_CommerceProject.WebAPI.Helper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Serilog;
 
 namespace E_CommerceProject.WebAPI
@@ -45,7 +46,7 @@ namespace E_CommerceProject.WebAPI
             // register services to the container.
             builder.Services.AddRepositories();
             builder.Services.AddServices();
-            builder.Services.AddScoped<IFileProvider, FileProvider>();
+            builder.Services.AddScoped<IFileHelper, FileHelper>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -65,6 +66,15 @@ namespace E_CommerceProject.WebAPI
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            #region make static file 
+            var staticFilesPath = Path.Combine(Environment.CurrentDirectory, "Images");
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(staticFilesPath),
+                RequestPath = "/Images"
+            });
+            #endregion
 
             app.UseHttpsRedirection();
 

@@ -12,11 +12,11 @@ namespace E_CommerceProject.WebAPI.Controllers
     {
         private readonly IProductsService _productsService;
         private readonly ILogger<DashboardController> _logger;
-        private readonly IFileProvider _helper;
+        private readonly IFileHelper _helper;
 
         public DashboardController(IProductsService productsService
             , ILogger<DashboardController> logger
-            , IFileProvider helper)
+            , IFileHelper helper)
         {
             _productsService = productsService;
             _logger = logger;
