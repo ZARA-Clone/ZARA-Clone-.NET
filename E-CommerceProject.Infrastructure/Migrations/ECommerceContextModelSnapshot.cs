@@ -295,58 +295,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.HasIndex("BrandId");
 
                     b.ToTable("Products");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            BrandId = 1,
-                            Description = "test p1",
-                            Discount = 10m,
-                            Model = "M1",
-                            Name = "product1",
-                            Price = 1000m
-                        },
-                        new
-                        {
-                            Id = 2,
-                            BrandId = 1,
-                            Description = "test p2",
-                            Discount = 20m,
-                            Model = "M2",
-                            Name = "product2",
-                            Price = 2000m
-                        },
-                        new
-                        {
-                            Id = 3,
-                            BrandId = 2,
-                            Description = "test p3",
-                            Discount = 30m,
-                            Model = "M3",
-                            Name = "product3",
-                            Price = 3000m
-                        },
-                        new
-                        {
-                            Id = 4,
-                            BrandId = 3,
-                            Description = "test p4",
-                            Discount = 40m,
-                            Model = "M4",
-                            Name = "product4",
-                            Price = 4000m
-                        },
-                        new
-                        {
-                            Id = 5,
-                            BrandId = 3,
-                            Description = "test p5",
-                            Discount = 50m,
-                            Model = "M5",
-                            Name = "product5",
-                            Price = 5000m
-                        });
                 });
 
             modelBuilder.Entity("E_CommerceProject.Models.ProductImage", b =>

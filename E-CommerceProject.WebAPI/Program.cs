@@ -1,12 +1,19 @@
 
+using Azure.Core;
 using E_CommerceProject.Business.Products.ModelValidator;
 using E_CommerceProject.Business.Shared;
 using E_CommerceProject.Infrastructure.Context;
 using E_CommerceProject.Infrastructure.Shared;
+using E_CommerceProject.Models;
 using E_CommerceProject.WebAPI.Helper;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Serilog;
+using System.Text;
 
 namespace E_CommerceProject.WebAPI
 {
@@ -15,6 +22,7 @@ namespace E_CommerceProject.WebAPI
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var configuration = builder.Configuration;
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(builder.Configuration)
                 .Enrich.FromLogContext()
@@ -52,10 +60,70 @@ namespace E_CommerceProject.WebAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            //For Identity
+
+            builder.Services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<ECommerceContext>()
+                .AddDefaultTokenProviders();//for change email 
+
+            // For Authentication
+ builder.Services.AddAuthentication(options =>
+ {
+     // This specifies that JWT Bearer authentication will be used as the default
+     // authentication scheme for authenticating and challenging requests./
+     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+
+ }).AddJwtBearer(options =>
+ {
+     // instructs the middleware to save the token in the
+     // authentication properties after a successful authentication.
+     options.SaveToken = true;
+     //allows the use of HTTP (non-HTTPS) requests for token validation. 
+     options.RequireHttpsMetadata = false;
+     options.TokenValidationParameters = new TokenValidationParameters()
+     {
+         ValidateIssuer = true,
+         ValidateAudience = true,
+         ValidAudience = configuration["JWT:ValidAudience"],
+         ValidIssuer = configuration["JWT:ValidIssuer"],
+         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
+     };
+ });
+
+
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<ECommerceContext>(options =>
             {
                 options.UseSqlServer(connectionString);
+            });
+
+            builder.Services.AddSwaggerGen(option =>
+            {
+                option.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Auth API", Version = "v1" });
+                option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please enter a valid token",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "Bearer"
+                });
+                option.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {{
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type=ReferenceType.SecurityScheme,
+                            Id="Bearer"
+                        }
+                    },
+                    new string[]{}
+                    }
+                });
             });
             var app = builder.Build();
 
@@ -70,7 +138,9 @@ namespace E_CommerceProject.WebAPI
 
             app.UseCors("AllowAllDomains");
 
+            app.UseAuthentication();
             app.UseAuthorization();
+      
 
 
             app.MapControllers();
