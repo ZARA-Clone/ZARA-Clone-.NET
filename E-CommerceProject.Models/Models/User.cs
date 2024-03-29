@@ -1,9 +1,13 @@
 ﻿using E_CommerceProject.Models.Enums;
+using Microsoft.AspNetCore.Identity;
 
 namespace E_CommerceProject.Models
 {
     public class User
     {
+
+
+
         public int Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }

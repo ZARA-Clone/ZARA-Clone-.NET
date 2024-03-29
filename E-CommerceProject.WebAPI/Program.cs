@@ -2,9 +2,12 @@
 using E_CommerceProject.Business.Products.ModelValidator;
 using E_CommerceProject.Business.Shared;
 using E_CommerceProject.Infrastructure.Context;
+
 using E_CommerceProject.Infrastructure.Shared;
+using E_CommerceProject.Models.Models;
 using E_CommerceProject.WebAPI.Helper;
 using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -30,6 +33,18 @@ namespace E_CommerceProject.WebAPI
                 });
             });
 
+
+            //builder.Services.AddCors(options =>
+            //{
+            //    options.AddPolicy("AllowSpecificOrigin", builder =>
+            //    {
+            //        builder.WithOrigins("http://localhost:4200")
+            //               .AllowAnyHeader()
+            //               .AllowAnyMethod();
+            //    });
+            //});
+
+
             builder.Host.UseSerilog();
             // automapper
             builder.Services.AddAutoMapper(config =>
@@ -47,12 +62,35 @@ namespace E_CommerceProject.WebAPI
             builder.Services.AddServices();
             builder.Services.AddScoped<IFileProvider, FileProvider>();
 
+
+            
+
+
+
+
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            ////////////////////////////////////////////////////////
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>().
+                AddEntityFrameworkStores<ECommerceContext>();
 
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+           // builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+
+
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
+            });
+
+            // Other configurations...
+        
+
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<ECommerceContext>(options =>
             {
                 options.UseSqlServer(connectionString);
