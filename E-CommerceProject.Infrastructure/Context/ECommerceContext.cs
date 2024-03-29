@@ -113,10 +113,16 @@ namespace E_CommerceProject.Infrastructure.Context
             });
 
 
-            modelBuilder.Entity<UserCart>(builder =>
-            {
-                builder.HasKey(c => new { c.UserId, c.ProductId });
-            });
+            //modelBuilder.Entity<UserCart>(builder =>
+            //{
+            //    builder.HasKey(c => new { c.UserId, c.ProductId });
+            //});
+
+
+            
+
+
+
 
             modelBuilder.Entity<WishList>(builder =>
             {

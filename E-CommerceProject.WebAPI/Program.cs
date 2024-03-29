@@ -2,7 +2,8 @@
 using E_CommerceProject.Business.Products.ModelValidator;
 using E_CommerceProject.Business.Shared;
 using E_CommerceProject.Infrastructure.Context;
-
+using E_CommerceProject.Infrastructure.Repositories;
+using E_CommerceProject.Infrastructure.Repositories.cart;
 using E_CommerceProject.Infrastructure.Shared;
 using E_CommerceProject.Models.Models;
 using E_CommerceProject.WebAPI.Helper;
@@ -110,7 +111,7 @@ namespace E_CommerceProject.WebAPI
             });
 
             // Other configurations...
-        
+            builder.Services.AddScoped<ICartRepository,CartRepository>();
 
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<ECommerceContext>(options =>

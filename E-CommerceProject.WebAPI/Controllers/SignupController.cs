@@ -1,8 +1,10 @@
 ﻿using E_CommerceProject.Business.user.Dtos;
+using E_CommerceProject.Infrastructure.Context;
 using E_CommerceProject.Models.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -16,11 +18,32 @@ namespace E_CommerceProject.WebAPI.Controllers
     public class SignupController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        public SignupController(UserManager<ApplicationUser> userManager)
+        private readonly ECommerceContext _context;
+        public SignupController(UserManager<ApplicationUser> userManager, ECommerceContext context)
         {
             _userManager = userManager;
+            _context = context;
+            
 
         }
+
+
+
+
+
+
+        [HttpPost("checkEmailExists")]
+        public IActionResult CheckEmailExists([FromBody] RegReq userData)
+        {
+            if (userData == null || string.IsNullOrWhiteSpace(userData.Email))
+            {
+                return BadRequest("Invalid user data or email is missing.");
+            }
+
+            var userWithEmail = _context.Users.FirstOrDefault(u => u.Email == userData.Email||u.UserName==userData.UserName);
+            return Ok(userWithEmail != null); 
+        }
+
 
 
 
