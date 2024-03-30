@@ -69,13 +69,12 @@ namespace E_CommerceProject.Business.Products
             if (product == null)
                 throw new ArgumentNullException("id", $"There is no product with id: {id}");
 
-            _mapper.Map(productDto, product);
-            //product.ProductImages.Clear();
-            // ToDo: handle images
-            foreach (var item in productDto.ImageUrls)
+            product.ProductImages = productDto.ImageUrls.Select(i => new ProductImage
             {
-                product.ProductImages.Add(new ProductImage { Url = item });
-            }
+                Url = i
+            }).ToList();
+            _mapper.Map(productDto, product);
+            
             var validationResult = await _validator.ValidateAsync(product);
             if (!validationResult.IsValid)
                 return ServiceResponse.Fail(validationResult.Errors);

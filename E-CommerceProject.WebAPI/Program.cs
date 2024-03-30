@@ -67,14 +67,12 @@ namespace E_CommerceProject.WebAPI
                 app.UseSwaggerUI();
             }
 
-            #region make static file 
             var staticFilesPath = Path.Combine(Environment.CurrentDirectory, "Images");
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(staticFilesPath),
                 RequestPath = "/Images"
             });
-            #endregion
 
             app.UseHttpsRedirection();
 
