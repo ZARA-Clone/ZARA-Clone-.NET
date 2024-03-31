@@ -57,7 +57,7 @@ namespace E_CommerceProject.WebAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult GetById(int id)
         {
-            var product = _context.Products.Include(p => p.Sizes)
+            var product = _context.Products.Include(p => p.ProductSizes)
                 .Include(p => p.ProductImages)
                 .FirstOrDefault(p => p.Id == id);
 
@@ -68,8 +68,8 @@ namespace E_CommerceProject.WebAPI.Controllers
             List<string> imageUrls = product.ProductImages
                 .Select(img => img.Url)
                 .ToList();
-            List<SizeEnum> sizes = product.Sizes
-                .Select(size => size.Name)
+            List<Size> sizes = product.ProductSizes
+                .Select(size => size.Size)
                 .ToList();
             ProductDetailsDto PD = new ProductDetailsDto()
             {

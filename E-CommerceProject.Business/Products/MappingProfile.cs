@@ -9,6 +9,8 @@ namespace E_CommerceProject.Business.Products
         public MappingProfile()
         {
             CreateMap<Product, ProductDto>()
+                .ForMember(c => c.Sizes, opt => 
+                    opt.MapFrom(c => c.ProductSizes.Select(s => new KeyValuePair<string, int>(s.Size.ToString(), s.Quantity))))
                 .ForMember(c => c.ImageUrls, opt => opt.MapFrom(c => c.ProductImages.Select(img => img.Url)))
                 .ForMember(c => c.BrandName, opt => opt.MapFrom(c => c.Brand.Name))
                 .ReverseMap()

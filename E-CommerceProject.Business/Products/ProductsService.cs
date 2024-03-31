@@ -4,6 +4,7 @@ using E_CommerceProject.Business.Products.Interfaces;
 using E_CommerceProject.Business.Shared;
 using E_CommerceProject.Infrastructure.Core.Base;
 using E_CommerceProject.Models;
+using E_CommerceProject.Models.Enums;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 
@@ -49,6 +50,15 @@ namespace E_CommerceProject.Business.Products
                 newProduct.ProductImages.Add(new ProductImage { Url = item });
             }
 
+            foreach (var item in productDto.Sizes)
+            {
+                newProduct.ProductSizes.Add(new ProductSize
+                {
+                    Size = (Size)Enum.Parse(typeof(Size), item.Key, true),
+                    Quantity = item.Value
+                });
+            }
+
             //validation
             var validationResult = await _validator.ValidateAsync(newProduct);
             if (!validationResult.IsValid)
@@ -73,8 +83,15 @@ namespace E_CommerceProject.Business.Products
             {
                 Url = i
             }).ToList();
+
+            product.ProductSizes = productDto.Sizes.Select(s => new ProductSize
+            {
+                Size = (Size)Enum.Parse(typeof(Size), s.Key, true),
+                Quantity = s.Value
+            }).ToList();
+           
             _mapper.Map(productDto, product);
-            
+
             var validationResult = await _validator.ValidateAsync(product);
             if (!validationResult.IsValid)
                 return ServiceResponse.Fail(validationResult.Errors);

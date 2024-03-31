@@ -19,6 +19,7 @@ namespace E_CommerceProject.Infrastructure.Repositories.Products
             return await _dbContext.Set<Product>()
                         .Include(c => c.Brand)
                         .Include(c => c.ProductImages)
+                        .Include(c => c.ProductSizes)
                         .OrderBy(c => c.Id)
                         .FirstOrDefaultAsync(p => p.Id == key);
 
@@ -28,6 +29,7 @@ namespace E_CommerceProject.Infrastructure.Repositories.Products
             return await _dbContext.Set<Product>()
                         .Include(c => c.Brand)
                         .Include(c => c.ProductImages)
+                        .Include(c => c.ProductSizes)
                         .OrderBy(c => c.Id)
                         .ToListAsync();
         }
