@@ -68,9 +68,10 @@ namespace E_CommerceProject.WebAPI.Controllers
 
             if (result.Succeeded)
             {
+                
 
                 var token = GenerateJwtToken(user);
-
+               ;
 
                 return Ok(new { Token = token });
             }
@@ -89,6 +90,9 @@ namespace E_CommerceProject.WebAPI.Controllers
             List<Claim> claims = new List<Claim>();
             claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
             claims.Add(new Claim(ClaimTypes.Email, user.Email));
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
+            claims.Add(new Claim(ClaimTypes.Role, "customer"));
+
 
 
             //secret key

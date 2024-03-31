@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using E_CommerceProject.Models.Enums;
 using E_CommerceProject.Infrastructure.Repositories.cart;
 using E_CommerceProject.Models.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace E_CommerceProject.Infrastructure.Repositories
 {
@@ -22,6 +23,100 @@ namespace E_CommerceProject.Infrastructure.Repositories
             _userManager = userManager;
         }
 
+        public int CheckAvailability(int productId, int sizeIndex)
+        {
+            var product = _dbContext.Products.FirstOrDefault(p => p.Id == productId);
+            if (product != null)
+            {
+                
+                SizeEnum size;
+                switch (sizeIndex)
+                {
+                    case 0:
+                        size = SizeEnum.Small;
+                        break;
+                    case 1:
+                        size = SizeEnum.Medium;
+                        break;
+                    case 2:
+                        size = SizeEnum.Large;
+                        break;
+                    case 3:
+                        size = SizeEnum.XLarge;
+                        break;
+                    default:
+                        
+                        throw new ArgumentException("Invalid size index");
+                }
+
+                // Check if the product has the specified size available
+                var productWithSizes = _dbContext.Products
+                    .Include(p => p.Sizes)
+                       .FirstOrDefault(p => p.Id == productId && p.Sizes.Any(s => s.Name == size && s.Quantity > 0));
+
+                return product != null ? product.Sizes.First(s => s.Name == size).Quantity : 0;
+            }
+            return 0;
+        }
+
+
+
+        public bool updateProductQuantity(string userId, int productId, int quantity, int sizeIndex)
+        {
+            
+            SizeEnum size;
+            switch (sizeIndex)
+            {
+                case 0:
+                    size = SizeEnum.Small;
+                    break;
+                case 1:
+                    size = SizeEnum.Medium;
+                    break;
+                case 2:
+                    size = SizeEnum.Large;
+                    break;
+                case 3:
+                    size = SizeEnum.XLarge;
+                    break;
+                default:
+                    throw new ArgumentException("Invalid size index");
+            }
+
+            var cartitem = _dbContext.UserCarts.FirstOrDefault(u => u.UserId == userId && u.ProductId == productId && u.SelectedSize == size);
+
+            if (cartitem != null)
+            {
+                cartitem.Quantity = quantity;
+                _dbContext.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         public async Task<List<UserCart>> GetCartItemsAsync(string userId)
         {
             return await _dbContext.UserCarts
@@ -33,73 +128,49 @@ namespace E_CommerceProject.Infrastructure.Repositories
         }
 
 
-        public async Task<bool> UpdateQuantityAsync(string userId, int productId, SizeEnum size, int quantity)
+        public  async Task DeleteItem(string userId, int productId, int SelectedSize)
         {
-            // Get the cart item
-            var cartItem = await _dbContext.UserCarts.FirstOrDefaultAsync(u => u.ProductId == productId && u.UserId == userId && u.SelectedSize == size);
-
-            // Check if the cart item exists
-            if (cartItem != null)
+            //convert the size index to the size enum
+            SizeEnum size;
+            switch (SelectedSize)
             {
-                // Get the product
-                var product = await _dbContext.Products.Include(p => p.Sizes).FirstOrDefaultAsync(p => p.Id == productId);
-
-                // Check if the product exists
-                if (product != null)
-                {
-                    // Find the size in the product's available sizes
-                    var productSize = product.Sizes.FirstOrDefault(s => s.Name == size);
-
-                    // Check if the size exists and if the quantity requested is available
-                    if (productSize != null && productSize.Quantity >= quantity)
-                    {
-                        // Update the quantity of the existing item
-                        cartItem.Quantity += quantity;
-
-                        // Decrease the quantity of the size in the product's available sizes
-                    //    productSize.Quantity -= quantity;
-
-                        // Save changes to the database
-                        await _dbContext.SaveChangesAsync();
-                        return true;
-                    }
-                    else
-                    {
-                        // The selected size is not available in the stock
-                        return false;
-                    }
-                }
-                else
-                {
-                    // Product not found
-                    return false;
-                }
+                case 0:
+                    size = SizeEnum.Small;
+                    break;
+                case 1:
+                    size = SizeEnum.Medium;
+                    break;
+                case 2:
+                    size = SizeEnum.Large;
+                    break;
+                case 3:
+                    size = SizeEnum.XLarge;
+                    break;
+                default:
+                    throw new ArgumentException("Invalid size index");
             }
-            else
+
+            var product = _dbContext.UserCarts.FirstOrDefault(u => u.UserId == userId && u.ProductId == productId && u.SelectedSize == size);
+            if (product != null)
             {
-                // Add a new item to the cart
-                _dbContext.UserCarts.Add(new UserCart { UserId = userId, ProductId = productId, SelectedSize = size, Quantity = quantity });
+                _dbContext.UserCarts.Remove(product);
+                 await _dbContext.SaveChangesAsync();
 
-                // Save changes to the database
-                await _dbContext.SaveChangesAsync();
-                return true;
             }
+           
+
+
+
+
         }
 
-
-        public async Task<bool> DeleteCartItemAsync(string userId, int productId)
+        public async Task AddItemToCart(UserCart userCart)
         {
-            var cartItem = await _dbContext.UserCarts.FirstOrDefaultAsync(u => u.ProductId == productId && u.UserId == userId);
-            if (cartItem != null)
-            {
-                _dbContext.UserCarts.Remove(cartItem);
-                await _dbContext.SaveChangesAsync();
-                return true;
-            }
-            return false;
+            //Add the product to the cart
+           _dbContext.UserCarts.Add(userCart);
+            await _dbContext.SaveChangesAsync();
+            
         }
-
-
     }
 }
 
