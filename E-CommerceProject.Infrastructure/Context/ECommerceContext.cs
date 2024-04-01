@@ -14,7 +14,6 @@ namespace E_CommerceProject.Infrastructure.Context
         public DbSet<Review> Reviews { get; set; }
         public DbSet<WishList> WishLists { get; set; }
         public DbSet<UserCart> UserCarts { get; set; }
-        public DbSet<UserAddress> UserAddresses { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -35,8 +34,6 @@ namespace E_CommerceProject.Infrastructure.Context
 
             modelBuilder.Entity<Order>(builder =>
             {
-                builder.Property(c => c.OrderStatus)
-                       .IsRequired();
 
                 builder.Property(c => c.OrderDate)
                        .IsRequired();
@@ -44,8 +41,6 @@ namespace E_CommerceProject.Infrastructure.Context
 
             modelBuilder.Entity<OrderDetails>(builder =>
             {
-                builder.HasKey(c => new { c.OrderId, c.ProductId });
-
                 builder.Property(c => c.Quantity)
                        .IsRequired();
 

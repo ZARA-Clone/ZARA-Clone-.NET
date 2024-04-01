@@ -221,18 +221,10 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("OrderStatus")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserAddressId")
-                        .HasColumnType("int");
-
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserAddressId");
 
                     b.HasIndex("UserId");
 
@@ -241,19 +233,30 @@ namespace E_CommerceProject.Infrastructure.Migrations
 
             modelBuilder.Entity("E_CommerceProject.Models.OrderDetails", b =>
                 {
-                    b.Property<int>("OrderId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductId")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("OrderId", "ProductId");
+                    b.Property<int>("Size")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
 
                     b.HasIndex("ProductId");
 
@@ -295,58 +298,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.HasIndex("BrandId");
 
                     b.ToTable("Products");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            BrandId = 1,
-                            Description = "test p1",
-                            Discount = 10m,
-                            Model = "M1",
-                            Name = "product1",
-                            Price = 1000m
-                        },
-                        new
-                        {
-                            Id = 2,
-                            BrandId = 1,
-                            Description = "test p2",
-                            Discount = 20m,
-                            Model = "M2",
-                            Name = "product2",
-                            Price = 2000m
-                        },
-                        new
-                        {
-                            Id = 3,
-                            BrandId = 2,
-                            Description = "test p3",
-                            Discount = 30m,
-                            Model = "M3",
-                            Name = "product3",
-                            Price = 3000m
-                        },
-                        new
-                        {
-                            Id = 4,
-                            BrandId = 3,
-                            Description = "test p4",
-                            Discount = 40m,
-                            Model = "M4",
-                            Name = "product4",
-                            Price = 4000m
-                        },
-                        new
-                        {
-                            Id = 5,
-                            BrandId = 3,
-                            Description = "test p5",
-                            Discount = 50m,
-                            Model = "M5",
-                            Name = "product5",
-                            Price = 5000m
-                        });
                 });
 
             modelBuilder.Entity("E_CommerceProject.Models.ProductImage", b =>
@@ -438,42 +389,15 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("E_CommerceProject.Models.UserAddress", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Street")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ZipCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserAddresses");
-                });
-
             modelBuilder.Entity("E_CommerceProject.Models.UserCart", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -528,10 +452,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
 
             modelBuilder.Entity("E_CommerceProject.Models.Order", b =>
                 {
-                    b.HasOne("E_CommerceProject.Models.UserAddress", null)
-                        .WithMany("Orders")
-                        .HasForeignKey("UserAddressId");
-
                     b.HasOne("E_CommerceProject.Models.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
@@ -597,17 +517,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Product");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("E_CommerceProject.Models.UserAddress", b =>
-                {
-                    b.HasOne("E_CommerceProject.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -690,11 +599,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
 
                     b.Navigation("WishList")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("E_CommerceProject.Models.UserAddress", b =>
-                {
-                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

@@ -2,6 +2,7 @@
 using E_CommerceProject.Business.Products.Interfaces;
 using E_CommerceProject.Business.Shared;
 using E_CommerceProject.Infrastructure.Context;
+using E_CommerceProject.Models;
 using E_CommerceProject.Models.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -84,11 +85,58 @@ namespace E_CommerceProject.WebAPI.Controllers
                 Description = product.Description,
                 Images = imageUrls,
                 Sizes = sizes,
-                Discount = product.Discount
+                Discount = product.Discount,
+                BrandId = product.BrandId
             };
             return Ok(PD);
         }
 
+
+
+
+
+
+        [HttpGet("brand/{id}")]
+        public ActionResult GetByBrandId(int id)
+        {
+            List<Product> products = _context.Products.Include(p => p.Sizes)
+                .Include(p => p.ProductImages)
+                .Where(p => p.BrandId == id).ToList();
+            if (products == null)
+            {
+                return NotFound();
+            }
+           
+           
+            List<ProductBrowseDto> PBD = new List<ProductBrowseDto>();
+
+            foreach (var product in products)
+            {
+                List<SizeQuantityDto> sizes = product.Sizes
+                .Select(size => new SizeQuantityDto
+                {
+                    Size = size.Name,
+                    Quantity = size.Quantity
+                })
+                .ToList();
+                var productImages = product.ProductImages.Select(img => img.Url).ToList();
+
+                ProductBrowseDto PB = new ProductBrowseDto()
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Price = product.Price,
+                    ImgUrl = productImages[0],
+                    BrandId = product.BrandId,
+                    Sizes = sizes
+
+                };
+                PBD.Add(PB);
+
+            }
+            return Ok(PBD);
+
+        }
 
     }
 
