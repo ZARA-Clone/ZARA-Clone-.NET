@@ -109,6 +109,8 @@ namespace E_CommerceProject.Infrastructure.Context
                 builder.HasMany(c => c.Carts)
                         .WithOne(c => c.User)
                         .HasForeignKey(c => c.UserId);
+              
+
             });
 
 
@@ -121,7 +123,7 @@ namespace E_CommerceProject.Infrastructure.Context
             modelBuilder.Entity<WishList>(builder =>
             {
                 builder.HasKey(c => new { c.UserId, c.ProductId });
-               
+
 
             });
 

@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace E_CommerceProject.Business.Products.Dtos
+namespace E_CommerceProject.Business.Emails.Dtos
 {
     public class LoginModel
     {
-        [Required(ErrorMessage ="Email is required")]
-        public string UserEmail {  get; set; }
+        [Required(ErrorMessage = "Email is required")]
+        public string UserEmail { get; set; }
         [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; }
     }

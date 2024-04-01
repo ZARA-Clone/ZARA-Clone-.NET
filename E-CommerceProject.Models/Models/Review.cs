@@ -1,4 +1,6 @@
-﻿namespace E_CommerceProject.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace E_CommerceProject.Models
 {
     public class Review
     {

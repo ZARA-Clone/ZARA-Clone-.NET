@@ -1,12 +1,16 @@
-﻿using E_CommerceProject.Business.Products.Dtos;
+﻿using Azure;
+using E_CommerceProject.Business.Emails.Dtos;
+using E_CommerceProject.Business.Emails.Interfcaes;
 using E_CommerceProject.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Response = E_CommerceProject.Business.Emails.Dtos.Response;
 
 namespace E_CommerceProject.WebAPI.Controllers
 {
@@ -17,12 +21,14 @@ namespace E_CommerceProject.WebAPI.Controllers
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
 
-        public AuthenticationController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+        public AuthenticationController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IEmailService emailService)
         {
             _configuration = configuration;
             _userManager = userManager;
             _roleManager = roleManager;
+            _emailService = emailService;
         }
 
         [HttpPost]
@@ -77,11 +83,77 @@ namespace E_CommerceProject.WebAPI.Controllers
             var Token = new JwtSecurityToken(
                     issuer: _configuration["JWT:ValidIssuer"],
                     audience: _configuration["JWT:ValidAudience"],
-                    expires: DateTime.Now.AddHours(1),
+                    expires: DateTime.Now.AddDays(2),
                     claims: authenticationClaims,
                     signingCredentials: new SigningCredentials(authenticationSigninKey, SecurityAlgorithms.HmacSha256)
                 );
             return Token;
+        }
+        //test end point 
+
+        //[HttpPost("testemail")]
+        //public IActionResult TestEmail()
+        //{
+        //    Message message = new Message(new string[] { "bashiratarekahmed@gmail.com" }, "Confirmation email link", "AAAAAAAAAAAAAAH");
+
+        //    _emailService.SendEmail(message);
+        //    return Ok("mail sent");
+        //}
+
+        [HttpPost("ForgetPassword")]
+        public async Task<IActionResult> ForgotPassword([Required] string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user != null)
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                var forgotpasswordlink = Url.Action(nameof(ResetPassword), "Authentication", new { token, email = user.Email }, Request.Scheme);
+                var message = new Message(new string[] { user.Email! }, "Confirmation email link", forgotpasswordlink!);
+                _emailService.SendEmail(message);
+
+                return StatusCode(StatusCodes.Status200OK,
+
+                        new Response { Status = "success", Message = $"Link to reset password sent successfully to email {user.Email}" });
+            }
+            return StatusCode(StatusCodes.Status400BadRequest);
+        }
+
+
+        [HttpGet("Resetpassword")]
+        public IActionResult ResetPassword(string token, string email)
+        {
+            var model = new ResetPasswordModel { Token = token, Email = email };
+            return Ok(new
+            {
+                model
+            });
+
+        }
+
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordModel resetPasswordModel)
+        {
+            var user = await _userManager.FindByEmailAsync(resetPasswordModel.Email);
+            if (user != null)
+            {
+                var resetpasswordResult = await _userManager.ResetPasswordAsync(user,
+                    resetPasswordModel.Token, resetPasswordModel.Password);
+
+                if (!resetpasswordResult.Succeeded)
+                {
+                    foreach (var error in resetpasswordResult.Errors)
+                    {
+                        ModelState.AddModelError(error.Code, error.Description);
+                    }
+                    return Ok(ModelState);
+                }
+
+                return StatusCode(StatusCodes.Status200OK,
+
+                        new Response { Status = "success", Message = $"Password Changed for email {user.Email}" });
+            }
+            return StatusCode(StatusCodes.Status400BadRequest, "Password didnt change server error");
         }
     }
 }

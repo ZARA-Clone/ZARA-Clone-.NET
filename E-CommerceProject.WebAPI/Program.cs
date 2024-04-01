@@ -1,5 +1,8 @@
 
 using Azure.Core;
+using E_CommerceProject.Business.Emails;
+using E_CommerceProject.Business.Emails.Dtos;
+using E_CommerceProject.Business.Emails.Interfcaes;
 using E_CommerceProject.Business.Products.ModelValidator;
 using E_CommerceProject.Business.Shared;
 using E_CommerceProject.Infrastructure.Context;
@@ -66,8 +69,26 @@ namespace E_CommerceProject.WebAPI
                 .AddEntityFrameworkStores<ECommerceContext>()
                 .AddDefaultTokenProviders();//for change email 
 
+
+
+            //forgetpassword
+            builder.Services.Configure<IdentityOptions>(
+                opt => opt.SignIn.RequireConfirmedEmail = true
+            );
+            builder.Services.Configure<DataProtectionTokenProviderOptions>(
+                opt => opt.TokenLifespan = TimeSpan.FromHours(10)
+                );
+
+            //add email configuration
+            var emailConfig = configuration
+                .GetSection("EmailConfiguration")
+                .Get<EmailConfiguration>();
+
+            builder.Services.AddSingleton(emailConfig);
+            builder.Services.AddScoped<IEmailService, EmailService>();
+
             // For Authentication
- builder.Services.AddAuthentication(options =>
+            builder.Services.AddAuthentication(options =>
  {
      // This specifies that JWT Bearer authentication will be used as the default
      // authentication scheme for authenticating and challenging requests./
@@ -84,8 +105,8 @@ namespace E_CommerceProject.WebAPI
      options.RequireHttpsMetadata = false;
      options.TokenValidationParameters = new TokenValidationParameters()
      {
-         ValidateIssuer = true,
-         ValidateAudience = true,
+         ValidateIssuer = false,
+         ValidateAudience = false,
          ValidAudience = configuration["JWT:ValidAudience"],
          ValidIssuer = configuration["JWT:ValidIssuer"],
          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))

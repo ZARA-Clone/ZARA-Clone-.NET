@@ -7,7 +7,8 @@ namespace E_CommerceProject.Models
 {
     public class User:IdentityUser
     {
-     
+
+    
         public int Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
@@ -19,7 +20,7 @@ namespace E_CommerceProject.Models
         public List<UserCart> Carts { get; set; }
         public IEnumerable<Order> Orders { get; set; } = new HashSet<Order>();
         public IEnumerable<Review> Reviews { get; set; } = new HashSet<Review>();
-       
+
         public WishList WishList { get; set; }
     }
 }
