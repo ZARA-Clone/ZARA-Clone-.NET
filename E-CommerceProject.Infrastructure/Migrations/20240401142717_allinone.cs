@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace E_CommerceProject.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class allinone : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,8 +34,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Role = table.Column<int>(type: "int", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
@@ -199,17 +197,17 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     City = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Street = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ZipCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserAddresses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserAddresses_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_UserAddresses_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -269,7 +267,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Discount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    Model = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BrandId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -287,22 +284,17 @@ namespace E_CommerceProject.Infrastructure.Migrations
                 name: "OrderDetails",
                 columns: table => new
                 {
-<<<<<<<< HEAD:E-CommerceProject.Infrastructure/Migrations/20240327183159_m1.cs
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     OrderId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
+                    Size = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
-========
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserAddressId = table.Column<int>(type: "int", nullable: true)
->>>>>>>> payment:E-CommerceProject.Infrastructure/Migrations/20240330005026_m1.cs
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderDetails", x => new { x.OrderId, x.ProductId });
+                    table.PrimaryKey("PK_OrderDetails", x => x.Id);
                     table.ForeignKey(
                         name: "FK_OrderDetails_Orders_OrderId",
                         column: x => x.OrderId,
@@ -368,9 +360,9 @@ namespace E_CommerceProject.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<int>(type: "int", nullable: false),
                     ProductID = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false)
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Size = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -387,6 +379,8 @@ namespace E_CommerceProject.Infrastructure.Migrations
                 name: "UserCarts",
                 columns: table => new
                 {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
@@ -394,7 +388,7 @@ namespace E_CommerceProject.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserCarts", x => new { x.UserId, x.ProductId });
+                    table.PrimaryKey("PK_UserCarts", x => x.Id);
                     table.ForeignKey(
                         name: "FK_UserCarts_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -422,34 +416,7 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_WishLists_AspNetUsers_UserId",
                         column: x => x.UserId,
-<<<<<<<< HEAD:E-CommerceProject.Infrastructure/Migrations/20240327183159_m1.cs
                         principalTable: "AspNetUsers",
-========
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OrderDetails",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    OrderId = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    Size = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrderDetails", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_OrderDetails_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
->>>>>>>> payment:E-CommerceProject.Infrastructure/Migrations/20240330005026_m1.cs
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -487,6 +454,18 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     { 10, 3, "Swimwear" },
                     { 11, 3, "Dresses" },
                     { 12, 3, "Tops" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "BrandId", "Description", "Discount", "Name", "Price" },
+                values: new object[,]
+                {
+                    { 1, 1, "test p1", 10m, "product1", 1000m },
+                    { 2, 1, "test p2", 20m, "product2", 2000m },
+                    { 3, 2, "test p3", 30m, "product3", 3000m },
+                    { 4, 3, "test p4", 40m, "product4", 4000m },
+                    { 5, 3, "test p5", 50m, "product5", 5000m }
                 });
 
             migrationBuilder.CreateIndex(
@@ -574,14 +553,19 @@ namespace E_CommerceProject.Infrastructure.Migrations
                 column: "ProductID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserAddresses_UserId1",
+                name: "IX_UserAddresses_UserId",
                 table: "UserAddresses",
-                column: "UserId1");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserCarts_ProductId",
                 table: "UserCarts",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserCarts_UserId",
+                table: "UserCarts",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WishLists_ProductId",

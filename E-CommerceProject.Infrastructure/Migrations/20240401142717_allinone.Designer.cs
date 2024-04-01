@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_CommerceProject.Infrastructure.Migrations
 {
     [DbContext(typeof(ECommerceContext))]
-<<<<<<<< HEAD:E-CommerceProject.Infrastructure/Migrations/20240329180454_init.Designer.cs
-    [Migration("20240329180454_init")]
-    partial class init
-========
-    [Migration("20240330151102_m2")]
-    partial class m2
->>>>>>>> payment:E-CommerceProject.Infrastructure/Migrations/20240330151102_m2.Designer.cs
+    [Migration("20240401142717_allinone")]
+    partial class allinone
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -190,11 +185,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -212,9 +202,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("int");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -273,30 +260,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("E_CommerceProject.Models.Models.Size", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Name")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductID");
-
-                    b.ToTable("Sizes");
-                });
-
             modelBuilder.Entity("E_CommerceProject.Models.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -308,7 +271,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
-<<<<<<<< HEAD:E-CommerceProject.Infrastructure/Migrations/20240329180454_init.Designer.cs
                     b.Property<int>("OrderStatus")
                         .HasColumnType("int");
 
@@ -318,12 +280,10 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-========
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
->>>>>>>> payment:E-CommerceProject.Infrastructure/Migrations/20240330151102_m2.Designer.cs
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserAddressId");
 
                     b.HasIndex("UserId");
 
@@ -381,9 +341,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.Property<decimal?>("Discount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Model")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -397,6 +354,53 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.HasIndex("BrandId");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BrandId = 1,
+                            Description = "test p1",
+                            Discount = 10m,
+                            Name = "product1",
+                            Price = 1000m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            BrandId = 1,
+                            Description = "test p2",
+                            Discount = 20m,
+                            Name = "product2",
+                            Price = 2000m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            BrandId = 2,
+                            Description = "test p3",
+                            Discount = 30m,
+                            Name = "product3",
+                            Price = 3000m
+                        },
+                        new
+                        {
+                            Id = 4,
+                            BrandId = 3,
+                            Description = "test p4",
+                            Discount = 40m,
+                            Name = "product4",
+                            Price = 4000m
+                        },
+                        new
+                        {
+                            Id = 5,
+                            BrandId = 3,
+                            Description = "test p5",
+                            Discount = 50m,
+                            Name = "product5",
+                            Price = 5000m
+                        });
                 });
 
             modelBuilder.Entity("E_CommerceProject.Models.ProductImage", b =>
@@ -419,6 +423,30 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductImages");
+                });
+
+            modelBuilder.Entity("E_CommerceProject.Models.ProductSize", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProductID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Size")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductID");
+
+                    b.ToTable("Sizes");
                 });
 
             modelBuilder.Entity("E_CommerceProject.Models.Review", b =>
@@ -446,11 +474,7 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.ToTable("Reviews");
                 });
 
-<<<<<<<< HEAD:E-CommerceProject.Infrastructure/Migrations/20240329180454_init.Designer.cs
             modelBuilder.Entity("E_CommerceProject.Models.UserAddress", b =>
-========
-            modelBuilder.Entity("E_CommerceProject.Models.User", b =>
->>>>>>>> payment:E-CommerceProject.Infrastructure/Migrations/20240330151102_m2.Designer.cs
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -458,7 +482,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-<<<<<<<< HEAD:E-CommerceProject.Infrastructure/Migrations/20240329180454_init.Designer.cs
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -467,63 +490,30 @@ namespace E_CommerceProject.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-========
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("int");
-
->>>>>>>> payment:E-CommerceProject.Infrastructure/Migrations/20240330151102_m2.Designer.cs
                     b.Property<string>("ZipCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-<<<<<<<< HEAD:E-CommerceProject.Infrastructure/Migrations/20240329180454_init.Designer.cs
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserAddresses");
-========
-                    b.ToTable("Users");
->>>>>>>> payment:E-CommerceProject.Infrastructure/Migrations/20240330151102_m2.Designer.cs
                 });
 
             modelBuilder.Entity("E_CommerceProject.Models.UserCart", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("ProductId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("Id")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -532,9 +522,15 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.Property<int>("SelectedSize")
                         .HasColumnType("int");
 
-                    b.HasKey("UserId", "ProductId");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserCarts");
                 });
@@ -701,28 +697,13 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("E_CommerceProject.Models.Models.Size", b =>
-                {
-                    b.HasOne("E_CommerceProject.Models.Product", "Product")
-                        .WithMany("Sizes")
-                        .HasForeignKey("ProductID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("E_CommerceProject.Models.Order", b =>
                 {
-<<<<<<<< HEAD:E-CommerceProject.Infrastructure/Migrations/20240329180454_init.Designer.cs
                     b.HasOne("E_CommerceProject.Models.UserAddress", null)
                         .WithMany("Orders")
                         .HasForeignKey("UserAddressId");
 
                     b.HasOne("E_CommerceProject.Models.Models.ApplicationUser", "User")
-========
-                    b.HasOne("E_CommerceProject.Models.User", "User")
->>>>>>>> payment:E-CommerceProject.Infrastructure/Migrations/20240330151102_m2.Designer.cs
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -772,6 +753,17 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("E_CommerceProject.Models.ProductSize", b =>
+                {
+                    b.HasOne("E_CommerceProject.Models.Product", "Product")
+                        .WithMany("ProductSizes")
+                        .HasForeignKey("ProductID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("E_CommerceProject.Models.Review", b =>
                 {
                     b.HasOne("E_CommerceProject.Models.Product", "Product")
@@ -791,18 +783,17 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-<<<<<<<< HEAD:E-CommerceProject.Infrastructure/Migrations/20240329180454_init.Designer.cs
             modelBuilder.Entity("E_CommerceProject.Models.UserAddress", b =>
                 {
                     b.HasOne("E_CommerceProject.Models.Models.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
 
-========
->>>>>>>> payment:E-CommerceProject.Infrastructure/Migrations/20240330151102_m2.Designer.cs
             modelBuilder.Entity("E_CommerceProject.Models.UserCart", b =>
                 {
                     b.HasOne("E_CommerceProject.Models.Product", "Product")
@@ -811,11 +802,7 @@ namespace E_CommerceProject.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-<<<<<<<< HEAD:E-CommerceProject.Infrastructure/Migrations/20240329180454_init.Designer.cs
                     b.HasOne("E_CommerceProject.Models.Models.ApplicationUser", "User")
-========
-                    b.HasOne("E_CommerceProject.Models.User", "User")
->>>>>>>> payment:E-CommerceProject.Infrastructure/Migrations/20240330151102_m2.Designer.cs
                         .WithMany("Carts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -929,31 +916,18 @@ namespace E_CommerceProject.Infrastructure.Migrations
 
                     b.Navigation("ProductImages");
 
-                    b.Navigation("Reviews");
+                    b.Navigation("ProductSizes");
 
-                    b.Navigation("Sizes");
+                    b.Navigation("Reviews");
 
                     b.Navigation("UserCarts");
 
                     b.Navigation("WishLists");
                 });
 
-<<<<<<<< HEAD:E-CommerceProject.Infrastructure/Migrations/20240329180454_init.Designer.cs
             modelBuilder.Entity("E_CommerceProject.Models.UserAddress", b =>
                 {
                     b.Navigation("Orders");
-========
-            modelBuilder.Entity("E_CommerceProject.Models.User", b =>
-                {
-                    b.Navigation("Carts");
-
-                    b.Navigation("Orders");
-
-                    b.Navigation("Reviews");
-
-                    b.Navigation("WishList")
-                        .IsRequired();
->>>>>>>> payment:E-CommerceProject.Infrastructure/Migrations/20240330151102_m2.Designer.cs
                 });
 #pragma warning restore 612, 618
         }

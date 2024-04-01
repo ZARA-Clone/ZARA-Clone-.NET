@@ -280,6 +280,8 @@ namespace E_CommerceProject.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserAddressId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Orders");
@@ -485,10 +487,8 @@ namespace E_CommerceProject.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ZipCode")
@@ -497,7 +497,7 @@ namespace E_CommerceProject.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserAddresses");
                 });
@@ -784,7 +784,9 @@ namespace E_CommerceProject.Infrastructure.Migrations
                 {
                     b.HasOne("E_CommerceProject.Models.Models.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -920,16 +922,9 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.Navigation("WishLists");
                 });
 
-            modelBuilder.Entity("E_CommerceProject.Models.User", b =>
+            modelBuilder.Entity("E_CommerceProject.Models.UserAddress", b =>
                 {
-                    b.Navigation("Carts");
-
                     b.Navigation("Orders");
-
-                    b.Navigation("Reviews");
-
-                    b.Navigation("WishList")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

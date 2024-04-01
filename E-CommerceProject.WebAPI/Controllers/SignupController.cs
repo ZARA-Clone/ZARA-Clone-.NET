@@ -80,11 +80,6 @@ namespace E_CommerceProject.WebAPI.Controllers
                 return BadRequest(result.Errors);
             }
         }
-
-
-
-
-
         private string GenerateJwtToken(ApplicationUser user)
         {
             List<Claim> claims = new List<Claim>();
