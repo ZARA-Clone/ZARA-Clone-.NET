@@ -1,6 +1,7 @@
 ﻿using E_CommerceProject.Business.Products.Dtos;
 using E_CommerceProject.Business.Products.Interfaces;
 using E_CommerceProject.Business.Shared;
+using E_CommerceProject.Models;
 using E_CommerceProject.WebAPI.Helper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,11 +13,11 @@ namespace E_CommerceProject.WebAPI.Controllers
     {
         private readonly IProductsService _productsService;
         private readonly ILogger<DashboardController> _logger;
-        private readonly IFileProvider _helper;
+        private readonly IFileHelper _helper;
 
         public DashboardController(IProductsService productsService
             , ILogger<DashboardController> logger
-            , IFileProvider helper)
+            , IFileHelper helper)
         {
             _productsService = productsService;
             _logger = logger;
@@ -25,11 +26,11 @@ namespace E_CommerceProject.WebAPI.Controllers
 
         [HttpGet]
         public async Task<ActionResult<PageList<ProductDto>>> Get(string? name, int? brandId, decimal? minPrice
-          , decimal? maxPrice, int? rating, int pageIndex = 0, int pageSize = 10)
+          , decimal? maxPrice, int pageIndex = 0, int pageSize = 10)
         {
             _logger.LogInformation($"Get products with brand '{brandId}'," +
                $" min price '{minPrice}',  max price '{maxPrice}', page index '{pageIndex}' and page size '{pageSize}'.");
-            var result = await _productsService.Get(name, brandId, minPrice, maxPrice, rating, pageIndex, pageSize);
+            var result = await _productsService.Get(name, brandId, minPrice, maxPrice, pageIndex, pageSize);
             _logger.LogInformation($"Get '{result.Items.Count}' products from '{result.TotalCount}'.");
             return result;
         }

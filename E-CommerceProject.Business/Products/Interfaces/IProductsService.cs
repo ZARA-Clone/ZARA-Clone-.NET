@@ -6,7 +6,7 @@ namespace E_CommerceProject.Business.Products.Interfaces
     public interface IProductsService
     {
         Task<PageList<ProductDto>> Get(string? name, int? brandId, decimal? minPrice
-            , decimal? maxPrice, int? rating, int pageIndex = 0, int pageSize = 10);
+            , decimal? maxPrice, int pageIndex = 0, int pageSize = 10);
         Task<List<ProductDto>> GetAll();
         Task<ProductDto> GetById(int id);
         Task<ServiceResponse> Add(AddProductDto productDto);

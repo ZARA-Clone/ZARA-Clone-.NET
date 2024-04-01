@@ -56,7 +56,7 @@ namespace E_CommerceProject.WebAPI
             // register services to the container.
             builder.Services.AddRepositories();
             builder.Services.AddServices();
-            builder.Services.AddScoped<IFileProvider, FileProvider>();
+            builder.Services.AddScoped<IFileHelper, FileHelper>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -188,13 +188,19 @@ namespace E_CommerceProject.WebAPI
                 app.UseSwaggerUI();
             }
 
+            var staticFilesPath = Path.Combine(Environment.CurrentDirectory, "Images");
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(staticFilesPath),
+                RequestPath = "/Images"
+            });
+
             app.UseHttpsRedirection();
 
             app.UseCors("AllowAllDomains");
 
             app.UseAuthentication();
             app.UseAuthorization();
-      
 
 
             app.MapControllers();

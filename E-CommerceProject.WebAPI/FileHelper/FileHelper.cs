@@ -1,6 +1,6 @@
 ﻿namespace E_CommerceProject.WebAPI.Helper
 {
-    public class FileProvider : IFileProvider
+    public class FileHelper : IFileHelper
     {
         public string validatImage(IFormFile file)
         {

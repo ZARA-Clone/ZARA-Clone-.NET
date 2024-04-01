@@ -19,6 +19,8 @@ namespace E_CommerceProject.Infrastructure.Repositories.Products
             return await _dbContext.Set<Product>()
                         .Include(c => c.Brand)
                         .Include(c => c.ProductImages)
+                        .Include(c => c.ProductSizes)
+                        .OrderBy(c => c.Id)
                         .FirstOrDefaultAsync(p => p.Id == key);
 
         }
@@ -27,11 +29,13 @@ namespace E_CommerceProject.Infrastructure.Repositories.Products
             return await _dbContext.Set<Product>()
                         .Include(c => c.Brand)
                         .Include(c => c.ProductImages)
+                        .Include(c => c.ProductSizes)
+                        .OrderBy(c => c.Id)
                         .ToListAsync();
         }
 
         public async Task<(List<Product> items, int totalItemsCount)> Get(string? name
-            , int? brandId, decimal? minPrice, decimal? maxPrice, int? rating
+            , int? brandId, decimal? minPrice, decimal? maxPrice
             , int pageIndex = 0, int pageSize = 10)
         {
             if (pageIndex < 0)
@@ -52,11 +56,9 @@ namespace E_CommerceProject.Infrastructure.Repositories.Products
                 query = query.Where(x => x.Price - ((x.Price * x.Discount) / 100) >= minPrice);
             if (maxPrice > 0)
                 query = query.Where(x => x.Price - ((x.Price * x.Discount) / 100) <= maxPrice);
-            if (rating > 0)
-                query = query.Where(x => x.Reviews.Average(r => rating) >= rating);
 
             var totalItems = await query.CountAsync();
-            var items = await query.OrderBy(c => c.Name)
+            var items = await query.OrderBy(c => c.Id)
                 .Skip(pageIndex * pageSize)
                 .Take(pageSize)
                 .ToListAsync();

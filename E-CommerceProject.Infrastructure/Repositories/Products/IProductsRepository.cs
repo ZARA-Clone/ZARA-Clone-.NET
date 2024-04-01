@@ -6,6 +6,6 @@ namespace E_CommerceProject.Infrastructure.Repositories.Products
     public interface IProductsRepository : IRepositoryAsync<Product, int>
     {
         Task<(List<Product> items, int totalItemsCount)> Get(string? name, int? brandId, decimal? minPrice
-           , decimal? maxPrice, int? rating, int pageIndex = 0, int pageSize = 10);
+           , decimal? maxPrice, int pageIndex = 0, int pageSize = 10);
     }
 }

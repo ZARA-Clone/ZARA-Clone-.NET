@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using E_CommerceProject.Business.Brands.Dtos;
 using E_CommerceProject.Business.Brands.Interfaces;
+using E_CommerceProject.Business.Shared;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_CommerceProject.WebAPI.Controllers
@@ -21,6 +22,18 @@ namespace E_CommerceProject.WebAPI.Controllers
             _mapper = mapper;
             _logger = logger;
         }
+
+        [HttpGet]
+        public async Task<ActionResult<PageList<BrandReadOnlyDto>>> Get(string? name
+            , int? categoryId , int pageIndex = 0, int pageSize = 10)
+        {
+            _logger.LogInformation($"Get brands with  '{categoryId}'," +
+            $", page index '{pageIndex}' and page size '{pageSize}'.");
+            var result = await _brandsService.Get(name, categoryId, pageIndex, pageSize);
+            _logger.LogInformation($"Get '{result.Items.Count}' products from '{result.TotalCount}'.");
+            return result;
+        }
+
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BrandReadOnlyDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -42,6 +55,7 @@ namespace E_CommerceProject.WebAPI.Controllers
         }
 
         [HttpGet]
+        [Route("getAll")]
         public async Task<ActionResult<List<BrandReadOnlyDto>>> Get()
         {
             _logger.LogInformation($"Get all brands");
@@ -129,6 +143,8 @@ namespace E_CommerceProject.WebAPI.Controllers
                 return NotFound();
             }
         }
+
+        
     }
 
 }

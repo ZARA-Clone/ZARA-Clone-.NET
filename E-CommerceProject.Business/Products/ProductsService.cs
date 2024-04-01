@@ -4,6 +4,7 @@ using E_CommerceProject.Business.Products.Interfaces;
 using E_CommerceProject.Business.Shared;
 using E_CommerceProject.Infrastructure.Core.Base;
 using E_CommerceProject.Models;
+using E_CommerceProject.Models.Enums;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 
@@ -49,6 +50,15 @@ namespace E_CommerceProject.Business.Products
                 newProduct.ProductImages.Add(new ProductImage { Url = item });
             }
 
+            foreach (var item in productDto.Sizes)
+            {
+                newProduct.ProductSizes.Add(new ProductSize
+                {
+                    Size = (Size)Enum.Parse(typeof(Size), item.Key, true),
+                    Quantity = item.Value
+                });
+            }
+
             //validation
             var validationResult = await _validator.ValidateAsync(newProduct);
             if (!validationResult.IsValid)
@@ -69,13 +79,19 @@ namespace E_CommerceProject.Business.Products
             if (product == null)
                 throw new ArgumentNullException("id", $"There is no product with id: {id}");
 
-            _mapper.Map(productDto, product);
-            //product.ProductImages.Clear();
-            // ToDo: handle images
-            foreach (var item in productDto.ImageUrls)
+            product.ProductImages = productDto.ImageUrls.Select(i => new ProductImage
             {
-                product.ProductImages.Add(new ProductImage { Url = item });
-            }
+                Url = i
+            }).ToList();
+
+            product.ProductSizes = productDto.Sizes.Select(s => new ProductSize
+            {
+                Size = (Size)Enum.Parse(typeof(Size), s.Key, true),
+                Quantity = s.Value
+            }).ToList();
+           
+            _mapper.Map(productDto, product);
+
             var validationResult = await _validator.ValidateAsync(product);
             if (!validationResult.IsValid)
                 return ServiceResponse.Fail(validationResult.Errors);
@@ -96,11 +112,11 @@ namespace E_CommerceProject.Business.Products
         }
 
         public async Task<PageList<ProductDto>> Get(string? name, int? brandId, decimal? minPrice
-            , decimal? maxPrice, int? rating, int pageIndex = 0, int pageSize = 10)
+            , decimal? maxPrice, int pageIndex = 0, int pageSize = 10)
         {
             _logger.LogInformation($"Get products with brand '{brandId}'," +
                 $" min price '{minPrice}',  max price '{maxPrice}', page index '{pageIndex}' and page size '{pageSize}'.");
-            var result = await _unitOfWork.ProductsRepository.Get(name, brandId, minPrice, maxPrice, rating, pageIndex, pageSize);
+            var result = await _unitOfWork.ProductsRepository.Get(name, brandId, minPrice, maxPrice, pageIndex, pageSize);
             _logger.LogInformation($"Get '{result.items.Count}' products from '{result.totalItemsCount}'.");
             return new PageList<ProductDto>(_mapper.Map<List<ProductDto>>(result.items), pageIndex, pageSize, result.totalItemsCount);
         }

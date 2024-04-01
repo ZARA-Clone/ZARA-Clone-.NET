@@ -5,6 +5,8 @@ namespace E_CommerceProject.Business.Brands.Interfaces
 {
     public interface IBrandsService
     {
+        Task<PageList<BrandReadOnlyDto>> Get(string? name
+            , int? categoryId, int pageIndex = 0, int pageSize = 10);
         Task<BrandReadOnlyDto> GetById(int id);
         Task<List<BrandReadOnlyDto>> GetAll();
         Task<ServiceResponse> Add(BrandDto brandDto);

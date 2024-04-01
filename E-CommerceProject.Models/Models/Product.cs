@@ -1,8 +1,4 @@
-﻿using E_CommerceProject.Models.Models;
-using System.Drawing;
-using Size = E_CommerceProject.Models.Models.Size;
-
-namespace E_CommerceProject.Models
+﻿namespace E_CommerceProject.Models
 {
     public class Product
     {
@@ -11,7 +7,6 @@ namespace E_CommerceProject.Models
         public decimal Price { get; set; }
         public decimal? Discount { get; set; }
         public string Description { get; set; } = string.Empty;
-        public string? Model { get; set; } = string.Empty;
         public int BrandId { get; set; }
         public Brand Brand { get; set; }
         public List<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
@@ -19,7 +14,7 @@ namespace E_CommerceProject.Models
         public List<OrderDetails> OrderDetails { get; set; } = new List<OrderDetails>();
         public List<Review> Reviews { get; set; } = new List<Review>();
         public List<WishList> WishLists { get; set; } = new List<WishList>();
-        public List<Size> Sizes { get; set; } = new List<Size>();
+        public List<ProductSize> ProductSizes { get; set; } = new List<ProductSize>();
 
 
 

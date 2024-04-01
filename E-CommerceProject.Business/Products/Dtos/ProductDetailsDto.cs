@@ -1,5 +1,4 @@
 ﻿using E_CommerceProject.Models.Enums;
-using System.Drawing;
 
 namespace E_CommerceProject.Business.Products.Dtos
 {
