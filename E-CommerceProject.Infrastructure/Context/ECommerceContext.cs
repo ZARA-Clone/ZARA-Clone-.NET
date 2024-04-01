@@ -169,6 +169,7 @@ namespace E_CommerceProject.Infrastructure.Context
 
             modelBuilder.Entity<Product>()
             .HasData(initialProducts);
+
         }
     }
 }
