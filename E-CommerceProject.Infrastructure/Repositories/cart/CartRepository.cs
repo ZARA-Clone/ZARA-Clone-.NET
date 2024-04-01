@@ -1,14 +1,10 @@
 ﻿using E_CommerceProject.Infrastructure.Context;
+using E_CommerceProject.Infrastructure.Repositories.cart;
 using E_CommerceProject.Models;
+using E_CommerceProject.Models.Enums;
+using E_CommerceProject.Models.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using E_CommerceProject.Models.Enums;
-using E_CommerceProject.Infrastructure.Repositories.cart;
-using E_CommerceProject.Models.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace E_CommerceProject.Infrastructure.Repositories
 {
@@ -28,56 +24,54 @@ namespace E_CommerceProject.Infrastructure.Repositories
             var product = _dbContext.Products.FirstOrDefault(p => p.Id == productId);
             if (product != null)
             {
-                
-                SizeEnum size;
+
+                Size size;
                 switch (sizeIndex)
                 {
                     case 0:
-                        size = SizeEnum.Small;
+                        size = Size.Small;
                         break;
                     case 1:
-                        size = SizeEnum.Medium;
+                        size = Size.Medium;
                         break;
                     case 2:
-                        size = SizeEnum.Large;
+                        size = Size.Large;
                         break;
                     case 3:
-                        size = SizeEnum.XLarge;
+                        size = Size.XLarge;
                         break;
                     default:
-                        
+
                         throw new ArgumentException("Invalid size index");
                 }
 
                 // Check if the product has the specified size available
                 var productWithSizes = _dbContext.Products
-                    .Include(p => p.Sizes)
-                       .FirstOrDefault(p => p.Id == productId && p.Sizes.Any(s => s.Name == size && s.Quantity > 0));
+                    .Include(p => p.ProductSizes)
+                       .FirstOrDefault(p => p.Id == productId && p.ProductSizes.Any(s => s.Size == size && s.Quantity > 0));
 
-                return product != null ? product.Sizes.First(s => s.Name == size).Quantity : 0;
+                return product != null ? product.ProductSizes.First(s => s.Size == size).Quantity : 0;
             }
             return 0;
         }
 
-
-
         public bool updateProductQuantity(string userId, int productId, int quantity, int sizeIndex)
         {
-            
-            SizeEnum size;
+
+            Size size;
             switch (sizeIndex)
             {
                 case 0:
-                    size = SizeEnum.Small;
+                    size = Size.Small;
                     break;
                 case 1:
-                    size = SizeEnum.Medium;
+                    size = Size.Medium;
                     break;
                 case 2:
-                    size = SizeEnum.Large;
+                    size = Size.Large;
                     break;
                 case 3:
-                    size = SizeEnum.XLarge;
+                    size = Size.XLarge;
                     break;
                 default:
                     throw new ArgumentException("Invalid size index");
@@ -97,54 +91,33 @@ namespace E_CommerceProject.Infrastructure.Repositories
             }
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         public async Task<List<UserCart>> GetCartItemsAsync(string userId)
         {
             return await _dbContext.UserCarts
-                                   .Include(u => u.Product).ThenInclude(f => f.ProductImages)
-                                   .Where(c => c.UserId == userId)// &&
-                                   //            _dbContext.Products.Any(p => p.Id == c.ProductId &&
-                                   //                                           p.Sizes.Any(s => s.Name == c.SelectedSize && s.Quantity > 0)))
-                                   .ToListAsync();
+                        .Include(u => u.Product)
+                            .ThenInclude(f => f.ProductImages)
+                        .Where(c => c.UserId == userId)
+                        .ToListAsync();
         }
 
 
-        public  async Task DeleteItem(string userId, int productId, int SelectedSize)
+        public async Task DeleteItem(string userId, int productId, int SelectedSize)
         {
             //convert the size index to the size enum
-            SizeEnum size;
+            Size size;
             switch (SelectedSize)
             {
                 case 0:
-                    size = SizeEnum.Small;
+                    size = Size.Small;
                     break;
                 case 1:
-                    size = SizeEnum.Medium;
+                    size = Size.Medium;
                     break;
                 case 2:
-                    size = SizeEnum.Large;
+                    size = Size.Large;
                     break;
                 case 3:
-                    size = SizeEnum.XLarge;
+                    size = Size.XLarge;
                     break;
                 default:
                     throw new ArgumentException("Invalid size index");
@@ -154,22 +127,17 @@ namespace E_CommerceProject.Infrastructure.Repositories
             if (product != null)
             {
                 _dbContext.UserCarts.Remove(product);
-                 await _dbContext.SaveChangesAsync();
+                await _dbContext.SaveChangesAsync();
 
             }
-           
-
-
-
-
         }
 
         public async Task AddItemToCart(UserCart userCart)
         {
             //Add the product to the cart
-           _dbContext.UserCarts.Add(userCart);
+            _dbContext.UserCarts.Add(userCart);
             await _dbContext.SaveChangesAsync();
-            
+
         }
     }
 }

@@ -95,29 +95,20 @@ namespace E_CommerceProject.Infrastructure.Context
 
             modelBuilder.Entity<ApplicationUser>(builder =>
             {
-              
-
                 builder.Property(c => c.Email)
                        .IsRequired()
                        .HasMaxLength(200);
-
               
                 builder.HasMany(c => c.Carts)
                         .WithOne(c => c.User)
                         .HasForeignKey(c => c.UserId);
 
                 //Added to fix One-One Relation Error
-                builder.HasMany(c => c.WishList)
+                builder.HasOne(c => c.WishList)
                        .WithOne(c => c.User)
-                       .HasForeignKey(c => c.UserId);
+                       .HasForeignKey<WishList>(c => c.UserId);
             });
 
-
-            modelBuilder.Entity<UserCart>(builder =>
-            {
-                builder.HasKey(c => new { c.UserId, c.ProductId });
-                
-            });
 
             modelBuilder.Entity<WishList>(builder =>
             {

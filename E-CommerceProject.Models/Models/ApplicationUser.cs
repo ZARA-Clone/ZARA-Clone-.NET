@@ -1,10 +1,4 @@
-﻿using E_CommerceProject.Models.Enums;
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace E_CommerceProject.Models.Models
 {
@@ -12,8 +6,6 @@ namespace E_CommerceProject.Models.Models
     {
         public string Country { get; set; }
         public string PhoneNumber { get; set; }
-
-      
         public List<UserCart> Carts { get; set; }
         public IEnumerable<Order> Orders { get; set; } = new HashSet<Order>();
         public IEnumerable<Review> Reviews { get; set; } = new HashSet<Review>();

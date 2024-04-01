@@ -1,48 +1,15 @@
-﻿using E_CommerceProject.Infrastructure.Repositories.cart;
+﻿using E_CommerceProject.Business.Cart.Dtos;
+using E_CommerceProject.Infrastructure.Repositories.cart;
 using E_CommerceProject.Models;
 using E_CommerceProject.Models.Enums;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_CommerceProject.WebAPI.Controllers
 {
-
-    public class CartItemDto
-    {
-        public int Id { get; set; }
-        public string? Title { get; set; }
-        public decimal? Price { get; set; }
-        public string? Description { get; set; }
-        public string? Category { get; set; }
-        public string? Image { get; set; }
-        //public RatingDto ?Rating { get; set; }
-
-        public int Quantity { get; set; }
-
-        public SizeEnum Size { get; set; }
-
-    }
-
-    //public class RatingDto
-    //{
-    //    public decimal Rate { get; set; }
-    //    public int Count { get; set; }
-    //}
-
-
     [Route("api/[controller]")]
     [ApiController]
     public class CartController : ControllerBase
     {
-
-
-
-
-
-
-
-
-
         private readonly ICartRepository _cartRepository;
 
         public CartController(ICartRepository cartRepository)
@@ -54,12 +21,12 @@ namespace E_CommerceProject.WebAPI.Controllers
         public async Task<IActionResult> GetCartItems([FromRoute] string userId)
         {
             #region testing
-          
+
             // Add Dummy User Cart
             List<UserCart> ListUserCart = new List<UserCart> {
-                new UserCart { ProductId = 1, UserId = userId, Quantity = 1, SelectedSize = SizeEnum.Small },
-                new UserCart { ProductId = 1, UserId = userId, Quantity = 1, SelectedSize = SizeEnum.Medium },
-                new UserCart { ProductId = 1, UserId = userId, Quantity = 1, SelectedSize = SizeEnum.Large },
+                new UserCart { ProductId = 1, UserId = userId, Quantity = 1, SelectedSize = Size.Small },
+                new UserCart { ProductId = 1, UserId = userId, Quantity = 1, SelectedSize = Size.Medium },
+                new UserCart { ProductId = 1, UserId = userId, Quantity = 1, SelectedSize = Size.Large },
 
             };
             // push to Db if User Cart is Empty
@@ -71,9 +38,6 @@ namespace E_CommerceProject.WebAPI.Controllers
                 }
             }
             #endregion
-
-
-
 
             var cartItems = await _cartRepository.GetCartItemsAsync(userId);
 
@@ -102,36 +66,8 @@ namespace E_CommerceProject.WebAPI.Controllers
             return Ok(cartItemsDto);
         }
 
-
-
-        //[HttpPost("update")]
-        //public async Task<IActionResult> UpdateCartItemQuantity(string userId, int productId, SizeEnum size, int quantity)
-        //{
-        //    var success = await _cartRepository.UpdateQuantityAsync(userId, productId, size, quantity);
-        //    if (success)
-        //        return Ok("Quantity updated successfully.");
-        //    else
-        //        return BadRequest("Failed to update quantity. The selected size might not be available in the stock.");
-        //}
-
-
-        //[HttpDelete("delete")]
-        //    public async Task<IActionResult> DeleteCartItem(string userId, int productId)
-        //    {
-        //        var success = await _cartRepository.DeleteCartItemAsync(userId, productId);
-        //        if (success)
-        //            return Ok("Item deleted successfully.");
-        //        else
-        //            return BadRequest("Failed to delete item.");
-        //    }
-
-
-
-
-
-
         [HttpGet("check-availability/{productId}/{size}")]
-        public IActionResult CheckAvailability(int productId,int size)
+        public IActionResult CheckAvailability(int productId, int size)
         {
             int availableQuantity = _cartRepository.CheckAvailability(productId, size);
             return Ok(availableQuantity);
@@ -142,7 +78,6 @@ namespace E_CommerceProject.WebAPI.Controllers
         [HttpPut("update-quantity/{userId}/{productId}")]
         public IActionResult updateProductQuantity(string userId, int productId, int quantity, int size)
         {
-            
 
             bool success = _cartRepository.updateProductQuantity(userId, productId, quantity, size);
             if (success)
@@ -155,46 +90,23 @@ namespace E_CommerceProject.WebAPI.Controllers
             }
         }
 
-
-
-        //    delete-item/${userId
-        ///${itemId
-
-
-       [HttpDelete("delete-item/{userId}/{productId}/{size}")]
-       public async Task<IActionResult> DeleteItemBySize(string userId,int productId, int size)
+        [HttpDelete("delete-item/{userId}/{productId}/{size}")]
+        public async Task<IActionResult> DeleteItemBySize(string userId, int productId, int size)
         {
-           
 
             try
             {
                 await _cartRepository.DeleteItem(userId, productId, size);
                 return Ok();
             }
-            
-            catch(Exception ex)
+
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-
-
-
-
-
         }
-
-
-
-
-
-
-
-
-
-
-
     }
-    }
+}
 
 
 

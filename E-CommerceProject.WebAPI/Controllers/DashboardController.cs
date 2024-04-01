@@ -1,12 +1,13 @@
 ﻿using E_CommerceProject.Business.Products.Dtos;
 using E_CommerceProject.Business.Products.Interfaces;
 using E_CommerceProject.Business.Shared;
-using E_CommerceProject.Models;
 using E_CommerceProject.WebAPI.Helper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_CommerceProject.WebAPI.Controllers
 {
+    [Authorize]
     [Route("/api/[controller]")]
     [ApiController]
     public class DashboardController : ControllerBase

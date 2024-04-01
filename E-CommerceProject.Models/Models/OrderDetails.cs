@@ -8,7 +8,7 @@ namespace E_CommerceProject.Models
         public int ProductId { get; set; }
         public int OrderId { get; set; }
         public int Quantity { get; set; }
-        public SizeEnum Size { get; set; }
+        public Size Size { get; set; }
         public decimal Price { get; set; }
         public Product Product { get; set; }
         public Order Order { get; set; }

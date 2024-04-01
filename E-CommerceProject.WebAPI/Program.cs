@@ -1,5 +1,3 @@
-
-using Azure.Core;
 using E_CommerceProject.Business.Emails;
 using E_CommerceProject.Business.Emails.Dtos;
 using E_CommerceProject.Business.Emails.Interfcaes;
@@ -15,7 +13,9 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Text;
 
@@ -52,7 +52,6 @@ namespace E_CommerceProject.WebAPI
             // register all validators
             builder.Services.AddValidatorsFromAssemblyContaining<ProductValidator>();
 
-
             // register services to the container.
             builder.Services.AddRepositories();
             builder.Services.AddServices();
@@ -62,14 +61,9 @@ namespace E_CommerceProject.WebAPI
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            ////////////////////////////////////////////////////////
+
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>().
                 AddEntityFrameworkStores<ECommerceContext>();
-
-
-            // builder.Services.AddScoped<IUserRepository, UserRepository>();
-
-
 
 
             builder.Services.AddAuthentication(options =>
@@ -88,8 +82,6 @@ namespace E_CommerceProject.WebAPI
                 };
             });
 
-
-
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
@@ -97,11 +89,7 @@ namespace E_CommerceProject.WebAPI
             });
 
             // Other configurations...
-            builder.Services.AddScoped<ICartRepository,CartRepository>();
-
-          
-
-
+            builder.Services.AddScoped<ICartRepository, CartRepository>();
 
             //forgetpassword
             builder.Services.Configure<IdentityOptions>(
@@ -109,44 +97,16 @@ namespace E_CommerceProject.WebAPI
             );
 
             builder.Services.Configure<DataProtectionTokenProviderOptions>(
-                opt => opt.TokenLifespan = TimeSpan.FromHours(10)
-                );
+                opt => opt.TokenLifespan = TimeSpan.FromHours(10));
 
             //add email configuration
-            var emailConfig = configuration
+            var emailConfig = builder.Configuration
                 .GetSection("EmailConfiguration")
                 .Get<EmailConfiguration>();
 
             builder.Services.AddSingleton(emailConfig);
             builder.Services.AddScoped<IEmailService, EmailService>();
-
-            // For Authentication
-            builder.Services.AddAuthentication(options =>
- {
-     // This specifies that JWT Bearer authentication will be used as the default
-     // authentication scheme for authenticating and challenging requests./
-     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-
- }).AddJwtBearer(options =>
- {
-     // instructs the middleware to save the token in the
-     // authentication properties after a successful authentication.
-     options.SaveToken = true;
-     //allows the use of HTTP (non-HTTPS) requests for token validation. 
-     options.RequireHttpsMetadata = false;
-     options.TokenValidationParameters = new TokenValidationParameters()
-     {
-         ValidateIssuer = false,
-         ValidateAudience = false,
-         ValidAudience = configuration["JWT:ValidAudience"],
-         ValidIssuer = configuration["JWT:ValidIssuer"],
-         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
-     };
- });
-
-
+          
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<ECommerceContext>(options =>
             {
@@ -155,7 +115,7 @@ namespace E_CommerceProject.WebAPI
 
             builder.Services.AddSwaggerGen(option =>
             {
-                option.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Auth API", Version = "v1" });
+                option.SwaggerDoc("v1", new OpenApiInfo { Title = "Auth API", Version = "v1" });
                 option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
@@ -165,6 +125,7 @@ namespace E_CommerceProject.WebAPI
                     BearerFormat = "JWT",
                     Scheme = "Bearer"
                 });
+
                 option.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {{
                     new OpenApiSecurityScheme
@@ -179,6 +140,7 @@ namespace E_CommerceProject.WebAPI
                     }
                 });
             });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
