@@ -26,5 +26,8 @@
 	  </PackageReference>
 	  <PackageReference Include="NETCore.MailKit" Version="2.1.0" />
 	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\E-CommerceProject.Models\E-CommerceProject.Models.csproj" />
+	</ItemGroup>
 
 </Project>

@@ -35,8 +35,6 @@ namespace E_CommerceProject.Infrastructure.Context
 
             modelBuilder.Entity<Order>(builder =>
             {
-                builder.Property(c => c.OrderStatus)
-                       .IsRequired();
 
                 builder.Property(c => c.OrderDate)
                        .IsRequired();
@@ -44,8 +42,6 @@ namespace E_CommerceProject.Infrastructure.Context
 
             modelBuilder.Entity<OrderDetails>(builder =>
             {
-                builder.HasKey(c => new { c.OrderId, c.ProductId });
-
                 builder.Property(c => c.Quantity)
                        .IsRequired();
 

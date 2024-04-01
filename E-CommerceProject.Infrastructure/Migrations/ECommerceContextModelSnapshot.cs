@@ -304,8 +304,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserAddressId");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("Orders");
@@ -313,19 +311,30 @@ namespace E_CommerceProject.Infrastructure.Migrations
 
             modelBuilder.Entity("E_CommerceProject.Models.OrderDetails", b =>
                 {
-                    b.Property<int>("OrderId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductId")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("OrderId", "ProductId");
+                    b.Property<int>("Size")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
 
                     b.HasIndex("ProductId");
 
@@ -867,9 +876,16 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.Navigation("WishLists");
                 });
 
-            modelBuilder.Entity("E_CommerceProject.Models.UserAddress", b =>
+            modelBuilder.Entity("E_CommerceProject.Models.User", b =>
                 {
+                    b.Navigation("Carts");
+
                     b.Navigation("Orders");
+
+                    b.Navigation("Reviews");
+
+                    b.Navigation("WishList")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
