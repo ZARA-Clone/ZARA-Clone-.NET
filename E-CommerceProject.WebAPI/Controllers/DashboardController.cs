@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace E_CommerceProject.WebAPI.Controllers
 {
-    [Authorize]
     [Route("/api/[controller]")]
     [ApiController]
     public class DashboardController : ControllerBase
