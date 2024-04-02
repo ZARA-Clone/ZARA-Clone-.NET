@@ -1,6 +1,8 @@
 ﻿using E_CommerceProject.Infrastructure.Core.Base;
 using E_CommerceProject.Infrastructure.Repositories.Brands;
 using E_CommerceProject.Infrastructure.Repositories.Products;
+using E_CommerceProject.Infrastructure.Repositories.UserDashboardRepository;
+using E_CommerceProject.Infrastructure.Repositories.UsersDashboard;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace E_CommerceProject.Infrastructure.Shared
@@ -11,6 +13,7 @@ namespace E_CommerceProject.Infrastructure.Shared
         {
             serviceCollection.AddScoped<IBrandRepository, BrandRepository>();
             serviceCollection.AddScoped<IProductsRepository, ProductsRepository>();
+            serviceCollection.AddScoped<IUserDashboardRepository, UserDashboardRepository>();
 
             serviceCollection.AddScoped<IUnitOfWorkAsync, UnitOfWorkAsync>();
             return serviceCollection;

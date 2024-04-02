@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace E_CommerceProject.WebAPI.Controllers
 {
+    [Authorize(Policy = "AdminOnly")]
     [Route("/api/[controller]")]
     [ApiController]
     public class DashboardController : ControllerBase

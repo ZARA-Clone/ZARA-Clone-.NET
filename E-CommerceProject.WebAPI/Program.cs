@@ -60,7 +60,6 @@ namespace E_CommerceProject.WebAPI
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>().
                 AddEntityFrameworkStores<ECommerceContext>();
@@ -78,7 +77,7 @@ namespace E_CommerceProject.WebAPI
                     ValidateAudience = false, // Set to true if you have an audience
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("your_secret_key_here"))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["JWT:Secret"]))
                 };
             });
 
@@ -121,11 +120,10 @@ namespace E_CommerceProject.WebAPI
                     In = ParameterLocation.Header,
                     Description = "Please enter a valid token",
                     Name = "Authorization",
-                    Type = SecuritySchemeType.Http,
+                    Type = SecuritySchemeType.ApiKey,
                     BearerFormat = "JWT",
                     Scheme = "Bearer"
                 });
-
                 option.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {{
                     new OpenApiSecurityScheme
