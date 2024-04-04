@@ -62,6 +62,7 @@ namespace E_CommerceProject.WebAPI.Controllers
             user.PhoneNumber = newuser.PhoneNumber;
             user.UserName= newuser.UserName;
             user.Country = newuser.country;
+            user.Address = newuser.Address;
             
 
             var result = await _userManager.CreateAsync(user, newuser.Password);
@@ -85,8 +86,7 @@ namespace E_CommerceProject.WebAPI.Controllers
             List<Claim> claims = new List<Claim>();
             claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
             claims.Add(new Claim(ClaimTypes.Email, user.Email));
-            claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
-            claims.Add(new Claim(ClaimTypes.Role, "customer"));
+          
 
 
 

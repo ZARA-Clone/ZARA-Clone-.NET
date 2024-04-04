@@ -1,3 +1,4 @@
+using E_CommerceProject.Business.Contactus;
 using E_CommerceProject.Business.Emails;
 using E_CommerceProject.Business.Emails.Dtos;
 using E_CommerceProject.Business.Emails.Interfcaes;
@@ -5,6 +6,7 @@ using E_CommerceProject.Business.Products.ModelValidator;
 using E_CommerceProject.Business.Shared;
 using E_CommerceProject.Infrastructure.Context;
 using E_CommerceProject.Infrastructure.Repositories;
+using E_CommerceProject.Infrastructure.Repositories.AddtoWishlist;
 using E_CommerceProject.Infrastructure.Repositories.cart;
 using E_CommerceProject.Infrastructure.Shared;
 using E_CommerceProject.Models.Models;
@@ -17,6 +19,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using Stripe;
 using System.Text;
 
 namespace E_CommerceProject.WebAPI
@@ -90,6 +93,11 @@ namespace E_CommerceProject.WebAPI
 
             // Other configurations...
             builder.Services.AddScoped<ICartRepository, CartRepository>();
+            builder.Services.AddScoped<IaddToWishlist,AddtoWishlist>();
+
+
+            // for contact us
+            builder.Services.AddScoped<ContactUs>();
 
             //forgetpassword
             builder.Services.Configure<IdentityOptions>(

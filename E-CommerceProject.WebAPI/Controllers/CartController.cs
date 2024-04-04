@@ -41,6 +41,38 @@ namespace E_CommerceProject.WebAPI.Controllers
 
             var cartItems = await _cartRepository.GetCartItemsAsync(userId);
 
+
+
+
+            //-----------to decrease the quantity in cart if the stock decreased-------
+
+            foreach (var cartItem in cartItems)
+            {
+                // Calculate available stock quantity for the product and size
+                int availableStock = _cartRepository.CheckAvailability(cartItem.ProductId, (int)cartItem.SelectedSize);
+
+             
+                int quantity = Math.Min(cartItem.Quantity, availableStock);
+
+                // Update the quantity in the cart if necessary
+                if (quantity == 0)
+                {
+                    // If the quantity in stock is zero, remove the item from the cart
+                    await _cartRepository.DeleteItem(userId, cartItem.ProductId, (int)cartItem.SelectedSize);
+                }
+                else
+                {
+                    
+                    _cartRepository.updateProductQuantity(userId, cartItem.ProductId, quantity, (int)cartItem.SelectedSize);
+                }
+            }
+
+            // Now retrieve the updated cart items from the database
+            cartItems = await _cartRepository.GetCartItemsAsync(userId);
+
+
+
+
             // Create a list to store CartItemDto objects
             List<CartItemDto> cartItemsDto = new List<CartItemDto>();
 
@@ -55,7 +87,8 @@ namespace E_CommerceProject.WebAPI.Controllers
                     Price = cartItem.Product.Price,
                     Image = cartItem.Product.ProductImages[0].Url,
                     Quantity = cartItem.Quantity,
-                    Size = cartItem.SelectedSize
+                    Size = cartItem.SelectedSize,
+                    Description = cartItem.Product.Description
                 };
 
                 // Add the CartItemDto object to the list

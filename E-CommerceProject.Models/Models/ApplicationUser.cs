@@ -4,6 +4,8 @@ namespace E_CommerceProject.Models.Models
 {
     public class ApplicationUser : IdentityUser
     {
+
+        public string Address {  get; set; }
         public string Country { get; set; }
         public string PhoneNumber { get; set; }
         public List<UserCart> Carts { get; set; }

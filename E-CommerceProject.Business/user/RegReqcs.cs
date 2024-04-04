@@ -10,7 +10,7 @@ namespace E_CommerceProject.Business.user.Dtos
 {
     public class RegReq
     {
-
+        public string Address {  get; set; }
         public string country { get; set; }
 
         public string Email { get; set; }

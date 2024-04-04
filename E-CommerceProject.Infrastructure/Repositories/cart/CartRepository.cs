@@ -28,16 +28,16 @@ namespace E_CommerceProject.Infrastructure.Repositories
                 Size size;
                 switch (sizeIndex)
                 {
-                    case 0:
+                    case 1:
                         size = Size.Small;
                         break;
-                    case 1:
+                    case 2:
                         size = Size.Medium;
                         break;
-                    case 2:
+                    case 3:
                         size = Size.Large;
                         break;
-                    case 3:
+                    case 4:
                         size = Size.XLarge;
                         break;
                     default:
@@ -61,16 +61,16 @@ namespace E_CommerceProject.Infrastructure.Repositories
             Size size;
             switch (sizeIndex)
             {
-                case 0:
+                case 1:
                     size = Size.Small;
                     break;
-                case 1:
+                case 2:
                     size = Size.Medium;
                     break;
-                case 2:
+                case 3:
                     size = Size.Large;
                     break;
-                case 3:
+                case 4:
                     size = Size.XLarge;
                     break;
                 default:
@@ -107,16 +107,16 @@ namespace E_CommerceProject.Infrastructure.Repositories
             Size size;
             switch (SelectedSize)
             {
-                case 0:
+                case 1:
                     size = Size.Small;
                     break;
-                case 1:
+                case 2:
                     size = Size.Medium;
                     break;
-                case 2:
+                case 3:
                     size = Size.Large;
                     break;
-                case 3:
+                case 4:
                     size = Size.XLarge;
                     break;
                 default:
