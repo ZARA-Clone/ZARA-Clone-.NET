@@ -65,7 +65,7 @@ namespace E_CommerceProject.WebAPI.Controllers
             
 
             var result = await _userManager.CreateAsync(user, newuser.Password);
-
+            
             if (result.Succeeded)
             {
                 

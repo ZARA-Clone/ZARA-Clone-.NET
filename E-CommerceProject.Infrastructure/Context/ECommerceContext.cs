@@ -15,11 +15,10 @@ namespace E_CommerceProject.Infrastructure.Context
         public DbSet<Review> Reviews { get; set; }
         public DbSet<WishList> WishLists { get; set; }
         public DbSet<UserCart> UserCarts { get; set; }
-        public DbSet<UserAddress> UserAddresses { get; set; }
+        //public DbSet<UserAddress> UserAddresses { get; set; }
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<ProductSize> Sizes { get; set; }
-
         public ECommerceContext(DbContextOptions<ECommerceContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -112,6 +111,7 @@ namespace E_CommerceProject.Infrastructure.Context
 
             modelBuilder.Entity<WishList>(builder =>
             {
+                builder.HasIndex(c => c.UserId).IsUnique(false);
                 builder.HasKey(c => new { c.UserId, c.ProductId });
             });
 

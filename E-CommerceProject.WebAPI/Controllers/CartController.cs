@@ -1,8 +1,16 @@
 ﻿using E_CommerceProject.Business.Cart.Dtos;
+using E_CommerceProject.Infrastructure.Context;
 using E_CommerceProject.Infrastructure.Repositories.cart;
+using E_CommerceProject.Infrastructure.Repositories.User;
 using E_CommerceProject.Models;
 using E_CommerceProject.Models.Enums;
+using E_CommerceProject.Models.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MimeKit.Cryptography;
+using System.Security.Claims;
 
 namespace E_CommerceProject.WebAPI.Controllers
 {
@@ -11,10 +19,16 @@ namespace E_CommerceProject.WebAPI.Controllers
     public class CartController : ControllerBase
     {
         private readonly ICartRepository _cartRepository;
+        private readonly ECommerceContext context;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly DecodeTokenRepository decode;
 
-        public CartController(ICartRepository cartRepository)
+        public CartController(ICartRepository cartRepository, ECommerceContext _context, UserManager<ApplicationUser> userManager, DecodeTokenRepository _decode)
         {
             _cartRepository = cartRepository;
+            context = _context;
+            this.userManager = userManager;
+            decode = _decode;
         }
 
         [HttpGet("{userId}")]
@@ -104,6 +118,52 @@ namespace E_CommerceProject.WebAPI.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpPost("AddToCart")]
+        public async Task<IActionResult> AddToCart(int productId, int size)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var product = context.Products
+                .Include(p => p.ProductSizes)
+                .Include(p => p.ProductImages)
+                .FirstOrDefault(p => p.Id == productId);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            var user = await userManager.FindByIdAsync(userId);
+
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+            var existingCartItem = context.UserCarts.FirstOrDefault(cart =>
+                cart.UserId == userId && cart.ProductId == productId && cart.SelectedSize == (Size)size);
+
+            if (existingCartItem != null)
+            {
+                existingCartItem.Quantity++;
+                context.SaveChanges();
+                return Ok();
+            }
+
+            var userCart = new UserCart
+                {
+                    ProductId = productId,
+                    UserId = userId,
+                    Quantity = 1,
+                    SelectedSize = (Size)size,
+                };
+
+                context.UserCarts.Add(userCart);
+                context.SaveChanges();
+
+                return Ok();
         }
     }
 }
