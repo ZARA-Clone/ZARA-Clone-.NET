@@ -28,16 +28,16 @@ namespace E_CommerceProject.Infrastructure.Repositories
                 Size size;
                 switch (sizeIndex)
                 {
-                    case 1:
+                    case 0:
                         size = Size.Small;
                         break;
-                    case 2:
+                    case 1:
                         size = Size.Medium;
                         break;
-                    case 3:
+                    case 2:
                         size = Size.Large;
                         break;
-                    case 4:
+                    case 3:
                         size = Size.XLarge;
                         break;
                     default:
@@ -48,7 +48,7 @@ namespace E_CommerceProject.Infrastructure.Repositories
                 // Check if the product has the specified size available
                 var productWithSizes = _dbContext.Products
                     .Include(p => p.ProductSizes)
-                       .FirstOrDefault(p => p.Id == productId && p.ProductSizes.Any(s => s.Size == size && s.Quantity > 0));
+                       .FirstOrDefault(p => p.Id == productId && p.ProductSizes.Any(s => s.Size == size && s.Quantity >= 0));
 
                 return product != null ? product.ProductSizes.First(s => s.Size == size).Quantity : 0;
             }
@@ -61,16 +61,16 @@ namespace E_CommerceProject.Infrastructure.Repositories
             Size size;
             switch (sizeIndex)
             {
-                case 1:
+                case 0:
                     size = Size.Small;
                     break;
-                case 2:
+                case 1:
                     size = Size.Medium;
                     break;
-                case 3:
+                case 2:
                     size = Size.Large;
                     break;
-                case 4:
+                case 3:
                     size = Size.XLarge;
                     break;
                 default:
@@ -107,16 +107,16 @@ namespace E_CommerceProject.Infrastructure.Repositories
             Size size;
             switch (SelectedSize)
             {
-                case 1:
+                case 0:
                     size = Size.Small;
                     break;
-                case 2:
+                case 1:
                     size = Size.Medium;
                     break;
-                case 3:
+                case 2:
                     size = Size.Large;
                     break;
-                case 4:
+                case 3:
                     size = Size.XLarge;
                     break;
                 default:

@@ -21,8 +21,8 @@ namespace E_CommerceProject.Business.Contactus
         {
 
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("Fashion Store", "nadinekhalil192@gmail.com"));
-            message.To.Add(new MailboxAddress("Recipient Name", toEmail));
+            message.From.Add(new MailboxAddress("Fashion Store", toEmail));
+            message.To.Add(new MailboxAddress("Recipient Name", "nadinenabil0000@gmail.com"));
             message.Subject = subject;
             message.Body = new TextPart("plain")
             {
