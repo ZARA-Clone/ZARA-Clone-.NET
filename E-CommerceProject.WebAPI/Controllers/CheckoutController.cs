@@ -1,4 +1,5 @@
-﻿using E_CommerceProject.Business.Checkout.Models;
+﻿using E_CommerceProject.Business.Checkout.Dtos;
+using E_CommerceProject.Business.Checkout.Models;
 using E_CommerceProject.Business.Products.Interfaces;
 using E_CommerceProject.Infrastructure.Context;
 using E_CommerceProject.Models;
@@ -76,6 +77,13 @@ namespace E_CommerceProject.WebAPI.Controllers
                         Size = cartItem.SelectedSize,
                     };
                     _context.OrderDetails.Add(orderDetail);
+
+                    // Reduce the quantity of the selected size in the ProductSize table
+                    var productSize = _context.Sizes.FirstOrDefault(ps => ps.ProductID == cartItem.ProductId && ps.Size == cartItem.SelectedSize);
+                    if (productSize != null)
+                    {
+                        productSize.Quantity -= cartItem.Quantity;
+                    }
                 }
 
 
@@ -84,7 +92,7 @@ namespace E_CommerceProject.WebAPI.Controllers
                 _context.Orders.Add(order);
                 _context.SaveChanges();
 
-                return Ok(new { message = "Payment successful", order });
+                return Ok("Payment successful");
             }
             catch (StripeException e)
             {
@@ -92,5 +100,78 @@ namespace E_CommerceProject.WebAPI.Controllers
             }
         }
 
+
+        [Authorize]
+        [HttpPost("Pay-On-Delivery")]
+        public async Task<IActionResult> PayOnDelivery(OrderDate orderdate)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+
+            var order = new Order
+            {
+                UserId = userId,
+                OrderDate = orderdate.Orderdate,
+            };
+
+
+            var cartItems = _context.UserCarts.Where(c => c.UserId == userId).ToList();
+            foreach (var cartItem in cartItems)
+            {
+                var orderDetail = new OrderDetails
+                {
+                    ProductId = cartItem.ProductId,
+                    OrderId = order.Id,
+                    Quantity = cartItem.Quantity,
+                    Price = cartItem.Product.Price,
+                    Size = cartItem.SelectedSize,
+                };
+                _context.OrderDetails.Add(orderDetail);
+
+                // Reduce the quantity of the selected size
+                var productSize = _context.Sizes.FirstOrDefault(ps => ps.ProductID == cartItem.ProductId && ps.Size == cartItem.SelectedSize);
+                if (productSize != null)
+                {
+                    productSize.Quantity -= cartItem.Quantity;
+                }
+            }
+
+            _context.UserCarts.RemoveRange(cartItems);
+            _context.Orders.Add(order);
+            _context.SaveChanges();
+
+            return Ok("Order Placed Successfully");
+        }
+
+
+        [Authorize]
+        [HttpGet("cartcontent")]
+        public async Task<IActionResult> GetCartContent()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var cartItems = _context.UserCarts.Where(c => c.UserId == userId).ToList();
+            List<CartContentDto> cartContent = new List<CartContentDto>();
+            foreach (var cartItem in cartItems)
+            {
+                CartContentDto cart = new CartContentDto()
+                {
+                    ImgUrl = cartItem.Product.ProductImages[0].Url,
+                };
+                cartContent.Add(cart);
+            }
+            return Ok(cartContent);
+        }
     }
+ 
 }
