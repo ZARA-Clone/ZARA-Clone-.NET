@@ -24,11 +24,11 @@ namespace E_CommerceProject.Business.Emails
         private void Send(MimeMessage emailMessage)
         {
             using var client = new SmtpClient();
-            try
+            try // aftah connection  send msg 
             {
                 client.Connect(_emailConfiguration.SmtpServer, _emailConfiguration.Port, true);
                 client.AuthenticationMechanisms.Remove("XOAUTH2");
-                client.Authenticate(_emailConfiguration.UserName, _emailConfiguration.Password);
+                client.Authenticate(_emailConfiguration.UserName, _emailConfiguration.Password);//bto33y la'n da l hyb3t menhom 
                 client.Send(emailMessage);
             }
             catch

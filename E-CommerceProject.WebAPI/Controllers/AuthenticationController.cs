@@ -3,6 +3,7 @@ using E_CommerceProject.Business.Emails.Dtos;
 using E_CommerceProject.Business.Emails.Interfcaes;
 using E_CommerceProject.Models;
 using E_CommerceProject.Models.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -37,7 +38,7 @@ namespace E_CommerceProject.WebAPI.Controllers
         public async Task<IActionResult> Login([FromBody] LoginModel loginModel)
         {
             //Check if user exists in db
-            var user = await _userManager.FindByEmailAsync(loginModel.UserEmail);
+            var user = await _userManager.FindByEmailAsync(loginModel.Email);
 
             //Check if password is correct
             if (user != null && await _userManager.CheckPasswordAsync(user, loginModel.Password))
@@ -51,9 +52,10 @@ namespace E_CommerceProject.WebAPI.Controllers
              
              new Claim("uid",user.Id.ToString()),
              new Claim(ClaimTypes.Email,user.Email),
-            
-             //global user id unique
-             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+             new Claim(ClaimTypes.NameIdentifier,user.Id),
+
+                //global user id unique
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
          };
                 var userRoles = await _userManager.GetRolesAsync(user);
                 //Add role to claims
@@ -79,19 +81,18 @@ namespace E_CommerceProject.WebAPI.Controllers
 
         private JwtSecurityToken GetToken(List<Claim> authenticationClaims)
         {
-            var authenticationSigninKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+            var authenticationSigninKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("your_secret_key_herebsdgghsghbqgugs"));
 
             var Token = new JwtSecurityToken(
-                    issuer: _configuration["JWT:ValidIssuer"],
-                    audience: _configuration["JWT:ValidAudience"],
-                    expires: DateTime.Now.AddDays(2),
+                   
+                    expires: DateTime.Now.AddDays(2).ToLocalTime(),
                     claims: authenticationClaims,
                     signingCredentials: new SigningCredentials(authenticationSigninKey, SecurityAlgorithms.HmacSha256)
                 );
             return Token;
         }
-        //test end point 
-
+        // test end point
+        //[Authorize]
         //[HttpPost("testemail")]
         //public IActionResult TestEmail()
         //{
@@ -154,7 +155,7 @@ namespace E_CommerceProject.WebAPI.Controllers
 
                         new Response { Status = "success", Message = $"Password Changed for email {user.Email}" });
             }
-            return StatusCode(StatusCodes.Status400BadRequest, "Password didnt change server error");
+            return StatusCode(StatusCodes.Status400BadRequest, "Password didn't change server error");
         }
     }
 }

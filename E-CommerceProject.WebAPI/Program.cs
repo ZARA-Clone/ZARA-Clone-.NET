@@ -62,9 +62,10 @@ namespace E_CommerceProject.WebAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>().
-                AddEntityFrameworkStores<ECommerceContext>();
-
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ECommerceContext>()
+                .AddDefaultTokenProviders();//for change email 
+ 
 
             builder.Services.AddAuthentication(options =>
             {
@@ -78,7 +79,8 @@ namespace E_CommerceProject.WebAPI
                     ValidateAudience = false, // Set to true if you have an audience
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("your_secret_key_here"))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("your_secret_key_herebsdgghsghbqgugs"))
+
                 };
             });
 

@@ -91,7 +91,7 @@ namespace E_CommerceProject.WebAPI.Controllers
 
 
             //secret key
-            string Key = "welcomeee to ecommerceee websiteee welcomeee to ecommerceee";
+            string Key = "your_secret_key_herebsdgghsghbqgugs";
 
             var secretkey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Key));
 
