@@ -34,5 +34,34 @@ namespace E_CommerceProject.WebAPI.Controllers
         }
 
 
+        [HttpDelete]
+        public async Task removewishlistitem([FromQuery] int ProductId, [FromQuery] string UserId)
+        {
+            var wishlist = new WishList
+            {
+                UserId = UserId,
+                ProductId = ProductId
+            };
+           await _wishlistRepository.removefromwishlist(wishlist);
+           
+
+        }
+
+
+        [HttpGet]
+        [Route("checkwish/{itemId}/{userId}")]
+        public IActionResult checkwishlist(int itemId , string userId) {
+        
+            bool iswishlist=_wishlistRepository.IsWishlist(itemId, userId); ;
+            
+            return Ok(iswishlist);  
+        }
+
+
+
+
     }
+
+
+
 }

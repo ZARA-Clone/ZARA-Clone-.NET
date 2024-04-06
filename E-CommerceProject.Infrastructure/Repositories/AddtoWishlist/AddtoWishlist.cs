@@ -1,5 +1,6 @@
 ﻿using E_CommerceProject.Infrastructure.Context;
 using E_CommerceProject.Models;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,5 +32,32 @@ namespace E_CommerceProject.Infrastructure.Repositories.AddtoWishlist
 
 
         }
+
+       
+
+        public async Task removefromwishlist(WishList wishlistitem)
+        {
+
+            var product=_context.WishLists.FirstOrDefault(u=>u.ProductId== wishlistitem.ProductId && u.UserId==wishlistitem.UserId);
+
+
+            if(product!=null)
+            {
+                _context.WishLists.Remove(product);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+
+
+        public bool IsWishlist(int itemId, string userId)
+        {
+            var wishlist = _context.WishLists.FirstOrDefault(u => u.UserId == userId && u.ProductId == itemId);
+            return wishlist != null;
+        }
+
+
+
+
     }
 }

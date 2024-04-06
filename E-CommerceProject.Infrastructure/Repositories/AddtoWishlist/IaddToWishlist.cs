@@ -12,6 +12,9 @@ namespace E_CommerceProject.Infrastructure.Repositories.AddtoWishlist
     {
 
         Task<WishList> AddToWishlist(WishList wishList);
+        
+      Task removefromwishlist(WishList wishList);
 
+        bool IsWishlist(int itemId, string userId);
     }
 }
