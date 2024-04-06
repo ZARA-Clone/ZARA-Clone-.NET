@@ -4,6 +4,7 @@ using E_CommerceProject.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_CommerceProject.Infrastructure.Migrations
 {
     [DbContext(typeof(ECommerceContext))]
-    partial class ECommerceContextModelSnapshot : ModelSnapshot
+    [Migration("20240404063646_wishlistuserid")]
+    partial class wishlistuserid
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -160,10 +163,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -272,11 +271,19 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("OrderStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserAddressId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserAddressId");
 
                     b.HasIndex("UserId");
 
@@ -465,6 +472,37 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("Reviews");
+                });
+
+            modelBuilder.Entity("E_CommerceProject.Models.UserAddress", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ZipCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserAddresses");
                 });
 
             modelBuilder.Entity("E_CommerceProject.Models.UserCart", b =>
@@ -660,6 +698,10 @@ namespace E_CommerceProject.Infrastructure.Migrations
 
             modelBuilder.Entity("E_CommerceProject.Models.Order", b =>
                 {
+                    b.HasOne("E_CommerceProject.Models.UserAddress", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("UserAddressId");
+
                     b.HasOne("E_CommerceProject.Models.Models.ApplicationUser", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
@@ -736,6 +778,17 @@ namespace E_CommerceProject.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Product");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("E_CommerceProject.Models.UserAddress", b =>
+                {
+                    b.HasOne("E_CommerceProject.Models.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -869,6 +922,11 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     b.Navigation("UserCarts");
 
                     b.Navigation("WishLists");
+                });
+
+            modelBuilder.Entity("E_CommerceProject.Models.UserAddress", b =>
+                {
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }
