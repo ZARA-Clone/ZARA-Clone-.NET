@@ -53,6 +53,8 @@ namespace E_CommerceProject.WebAPI.Controllers
              new Claim("uid",user.Id.ToString()),
              new Claim(ClaimTypes.Email,user.Email),
              new Claim(ClaimTypes.NameIdentifier,user.Id),
+             new Claim(ClaimTypes.Role, "customer"),
+             new Claim(ClaimTypes.MobilePhone,user.PhoneNumber),
 
                 //global user id unique
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
@@ -102,6 +104,25 @@ namespace E_CommerceProject.WebAPI.Controllers
         //    return Ok("mail sent");
         //}
 
+        //[HttpPost("ForgetPassword")]
+        //public async Task<IActionResult> ForgotPassword([Required] string email)
+        //{
+        //    var user = await _userManager.FindByEmailAsync(email);
+        //    if (user != null)
+        //    {
+        //        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+        //        var forgotpasswordlink = Url.Action(nameof(ResetPassword), "Authentication", new { token, email = user.Email }, Request.Scheme);
+        //        var message = new Message(new string[] { user.Email! }, "Confirmation email link", forgotpasswordlink!);
+        //        _emailService.SendEmail(message);
+
+        //        return StatusCode(StatusCodes.Status200OK,
+
+        //                new Response { Status = "success", Message = $"Link to reset password sent successfully to email {user.Email} ",tokenn=$"token={token}"});
+        //    }
+        //    return StatusCode(StatusCodes.Status400BadRequest);
+        //}
+
         [HttpPost("ForgetPassword")]
         public async Task<IActionResult> ForgotPassword([Required] string email)
         {
@@ -114,13 +135,20 @@ namespace E_CommerceProject.WebAPI.Controllers
                 var message = new Message(new string[] { user.Email! }, "Confirmation email link", forgotpasswordlink!);
                 _emailService.SendEmail(message);
 
-                return StatusCode(StatusCodes.Status200OK,
+                // Include token in the response object
+                var response = new Response
+                {
+                    Status = "success",
+                    Message = $"Link to reset password sent successfully to email {user.Email}",
+                    Token = token,
+                    Email=email
+                };
 
-                        new Response { Status = "success", Message = $"Link to reset password sent successfully to email {user.Email}" });
+                return StatusCode(StatusCodes.Status200OK, response);
             }
+
             return StatusCode(StatusCodes.Status400BadRequest);
         }
-
 
         [HttpGet("Resetpassword")]
         public IActionResult ResetPassword(string token, string email)
