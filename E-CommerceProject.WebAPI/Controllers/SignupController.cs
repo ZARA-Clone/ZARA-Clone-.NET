@@ -1,10 +1,8 @@
 ﻿using E_CommerceProject.Business.user.Dtos;
 using E_CommerceProject.Infrastructure.Context;
 using E_CommerceProject.Models.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -27,13 +25,8 @@ namespace E_CommerceProject.WebAPI.Controllers
         {
             _userManager = userManager;
             _context = context;
-           _configuration = configuration;
+            _configuration = configuration;
         }
-
-
-
-
-
 
         [HttpPost("checkEmailExists")]
         public IActionResult CheckEmailExists([FromBody] RegReq userData)
@@ -43,13 +36,9 @@ namespace E_CommerceProject.WebAPI.Controllers
                 return BadRequest("Invalid user data or email is missing.");
             }
 
-            var userWithEmail = _context.Users.FirstOrDefault(u => u.Email == userData.Email||u.UserName==userData.UserName);
-            return Ok(userWithEmail != null); 
+            var userWithEmail = _context.Users.FirstOrDefault(u => u.Email == userData.Email || u.UserName == userData.UserName);
+            return Ok(userWithEmail != null);
         }
-
-
-
-
 
 
         [HttpPost]
@@ -63,18 +52,15 @@ namespace E_CommerceProject.WebAPI.Controllers
             ApplicationUser user = new ApplicationUser();
             user.Email = newuser.Email;
             user.PhoneNumber = newuser.PhoneNumber;
-            user.UserName= newuser.UserName;
+            user.UserName = newuser.UserName;
             user.Country = newuser.country;
             user.Address = newuser.Address;
-            
+
 
             var result = await _userManager.CreateAsync(user, newuser.Password);
             if (result.Succeeded)
             {
-                
-
                 var token = GenerateJwtToken(user);
-               ;
 
                 return Ok(new { Token = token });
             }
@@ -85,22 +71,22 @@ namespace E_CommerceProject.WebAPI.Controllers
         }
         private string GenerateJwtToken(ApplicationUser user)
         {
-            List<Claim> claims = new List<Claim>();
-            claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
-            claims.Add(new Claim(ClaimTypes.Email, user.Email));
-
-
-
+            List<Claim> claims = new List<Claim>()
+            {
+                 new Claim("uid", user.Id.ToString()),
+                 new Claim(ClaimTypes.Email, user.Email),
+                 new Claim(ClaimTypes.NameIdentifier, user.Id),
+                 new Claim(ClaimTypes.Role, "customer"),
+                 new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
+            };
 
             //secret key
-            //string Key = "your_secret_key_herebsdgghsghbqgugs";
-            string Key = _configuration["JWT:Secret"];
+            string Key = "your_secret_key_herebsdgghsghbqgugs";
 
             var secretkey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Key));
 
             //create token 
             var signer = new SigningCredentials(secretkey, SecurityAlgorithms.HmacSha256);
-
 
             //generate token  //object
             var token = new JwtSecurityToken(

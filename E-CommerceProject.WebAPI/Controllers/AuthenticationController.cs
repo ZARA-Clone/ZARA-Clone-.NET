@@ -1,10 +1,6 @@
-﻿using Azure;
-using E_CommerceProject.Business.Emails.Dtos;
+﻿using E_CommerceProject.Business.Emails.Dtos;
 using E_CommerceProject.Business.Emails.Interfcaes;
-using E_CommerceProject.Models;
 using E_CommerceProject.Models.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -45,7 +41,6 @@ namespace E_CommerceProject.WebAPI.Controllers
             {
                 var userrole = await _userManager.GetRolesAsync(user);
 
-
                 //claimlist creation
                 var authenticationClaims = new List<Claim>
          {
@@ -73,9 +68,6 @@ namespace E_CommerceProject.WebAPI.Controllers
                 return Ok(new
                 {
                     token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
-                    validfrom = jwtToken.ValidFrom,
-                    expiration = jwtToken.ValidTo
-
                 });
             }
             return Unauthorized();
@@ -93,16 +85,6 @@ namespace E_CommerceProject.WebAPI.Controllers
                 );
             return Token;
         }
-        // test end point
-        //[Authorize]
-        //[HttpPost("testemail")]
-        //public IActionResult TestEmail()
-        //{
-        //    Message message = new Message(new string[] { "bashiratarekahmed@gmail.com" }, "Confirmation email link", "AAAAAAAAAAAAAAH");
-
-        //    _emailService.SendEmail(message);
-        //    return Ok("mail sent");
-        //}
 
         //[HttpPost("ForgetPassword")]
         //public async Task<IActionResult> ForgotPassword([Required] string email)

@@ -81,7 +81,7 @@ namespace E_CommerceProject.WebAPI
                     ValidateAudience = false, // Set to true if you have an audience
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["JWT:Secret"]))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("your_secret_key_herebsdgghsghbqgugs"))
                 };
             });
 

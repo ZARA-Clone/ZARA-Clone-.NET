@@ -7,9 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace E_CommerceProject.WebAPI.Controllers.Dashboard
 {
-    //[Authorize(Policy = "AdminOnly")]
+    [Authorize(Roles = "Admin")]
     [Route("dashboard/api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly IProductsService _productsService;
