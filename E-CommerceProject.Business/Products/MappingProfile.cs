@@ -9,15 +9,11 @@ namespace E_CommerceProject.Business.Products
         public MappingProfile()
         {
             CreateMap<Product, ProductDto>()
-                .ForMember(c => c.Sizes, opt => 
+                .ForMember(c => c.Sizes, opt =>
                     opt.MapFrom(c => c.ProductSizes.Select(s => new KeyValuePair<string, int>(s.Size.ToString(), s.Quantity))))
                 .ForMember(c => c.ImageUrls, opt => opt.MapFrom(c => c.ProductImages.Select(img => img.Url)))
                 .ForMember(c => c.BrandName, opt => opt.MapFrom(c => c.Brand.Name))
-                .ReverseMap()
-                .ForMember(c => c.Id, opt => opt.Ignore())
-                .ForMember(c => c.BrandId, opt => opt.Ignore())
-                .ForMember(c => c.Brand, opt => opt.Ignore())
-                .ForMember(c => c.ProductImages, opt => opt.Ignore());
+                .ReverseMap();
 
             CreateMap<Product, AddProductDto>()
                 .ReverseMap();

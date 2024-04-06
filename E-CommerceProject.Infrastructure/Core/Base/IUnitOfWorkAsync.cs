@@ -1,5 +1,7 @@
 ﻿using E_CommerceProject.Infrastructure.Repositories.Brands;
+using E_CommerceProject.Infrastructure.Repositories.Dashborad.Data;
 using E_CommerceProject.Infrastructure.Repositories.Products;
+using E_CommerceProject.Infrastructure.Repositories.UsersDashboard;
 
 namespace E_CommerceProject.Infrastructure.Core.Base
 {
@@ -10,6 +12,14 @@ namespace E_CommerceProject.Infrastructure.Core.Base
             get;
         }
         public IProductsRepository ProductsRepository
+        {
+            get;
+        }
+        public IUserDashboardRepository UserDashboardRepository
+        {
+            get;
+        }
+        public IDateRepository DateRepository
         {
             get;
         }

@@ -1,7 +1,10 @@
 ﻿using E_CommerceProject.Business.Brands;
 using E_CommerceProject.Business.Brands.Interfaces;
+using E_CommerceProject.Business.Dashborad.Data;
 using E_CommerceProject.Business.Products;
 using E_CommerceProject.Business.Products.Interfaces;
+using E_CommerceProject.Business.Users;
+using E_CommerceProject.Business.Users.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace E_CommerceProject.Business.Shared
@@ -12,6 +15,9 @@ namespace E_CommerceProject.Business.Shared
         {
             serviceCollection.AddTransient<IBrandsService, BrandsService>();
             serviceCollection.AddTransient<IProductsService, ProductsService>();
+            serviceCollection.AddScoped<IUserService, UsersService>();
+            serviceCollection.AddScoped<IDataService, DataService>();
+
 
             return serviceCollection;
         }
