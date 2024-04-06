@@ -112,7 +112,9 @@ namespace E_CommerceProject.Infrastructure.Context
 
             modelBuilder.Entity<WishList>(builder =>
             {
+                builder.HasIndex(c => c.UserId).IsUnique(false);
                 builder.HasKey(c => new { c.UserId, c.ProductId });
+             
             });
 
             modelBuilder.Entity<Contact>(builder =>
@@ -132,6 +134,8 @@ namespace E_CommerceProject.Infrastructure.Context
                 builder.Property(c =>c.Message)
                        .IsRequired()
                        .HasMaxLength(500);
+
+                
             });
             List<Category> categories = new List<Category>() { new Category() { Id =1, Name= "Man"},
                                                                new Category() { Id =2, Name= "Woman"},

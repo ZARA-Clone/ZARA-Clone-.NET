@@ -19,12 +19,15 @@ namespace E_CommerceProject.WebAPI.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ECommerceContext _context;
-        public SignupController(UserManager<ApplicationUser> userManager, ECommerceContext context)
+        private readonly IConfiguration _configuration;
+
+        public SignupController(UserManager<ApplicationUser> userManager
+            , ECommerceContext context
+            , IConfiguration configuration)
         {
             _userManager = userManager;
             _context = context;
-            
-
+           _configuration = configuration;
         }
 
 
@@ -86,12 +89,13 @@ namespace E_CommerceProject.WebAPI.Controllers
             List<Claim> claims = new List<Claim>();
             claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
             claims.Add(new Claim(ClaimTypes.Email, user.Email));
-          
+
 
 
 
             //secret key
-            string Key = "welcomeee to ecommerceee websiteee welcomeee to ecommerceee";
+            //string Key = "your_secret_key_herebsdgghsghbqgugs";
+            string Key = _configuration["JWT:Secret"];
 
             var secretkey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Key));
 
