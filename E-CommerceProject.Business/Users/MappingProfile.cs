@@ -8,7 +8,10 @@ namespace E_CommerceProject.Business.Users
     {
         public MappingProfile()
         {
-            CreateMap<ApplicationUser, UserDto>();
+            CreateMap<ApplicationUser, UserDto>()
+                .ReverseMap()
+                .ForMember(s => s.Id, opt => opt.Ignore())
+                .ForMember(s => s.Orders, opt => opt.Ignore());
 
         }
     }

@@ -12,7 +12,7 @@
         {
             if(pageIndex < 0)
                 throw new ArgumentOutOfRangeException(pageIndex.ToString(), $"'{pageIndex}' can't be less than zero.");
-            if(pageSize <= 0)
+            if(pageSize < 0)
                 throw new ArgumentOutOfRangeException(pageSize.ToString(), $"'{pageSize}' can't be less than zero.");
             if(totalCount <= 0)
                 throw new ArgumentOutOfRangeException(totalCount.ToString(), $"'{totalCount}' can't be less than or equal zero zero.");

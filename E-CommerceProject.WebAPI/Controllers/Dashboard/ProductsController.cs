@@ -5,19 +5,19 @@ using E_CommerceProject.WebAPI.Helper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace E_CommerceProject.WebAPI.Controllers
+namespace E_CommerceProject.WebAPI.Controllers.Dashboard
 {
-    [Authorize(Policy = "AdminOnly")]
-    [Route("/api/[controller]")]
+    //[Authorize(Policy = "AdminOnly")]
+    [Route("dashboard/api/[controller]")]
     [ApiController]
-    public class DashboardController : ControllerBase
+    public class ProductsController : ControllerBase
     {
         private readonly IProductsService _productsService;
-        private readonly ILogger<DashboardController> _logger;
+        private readonly ILogger<ProductsController> _logger;
         private readonly IFileHelper _helper;
 
-        public DashboardController(IProductsService productsService
-            , ILogger<DashboardController> logger
+        public ProductsController(IProductsService productsService
+            , ILogger<ProductsController> logger
             , IFileHelper helper)
         {
             _productsService = productsService;
@@ -159,7 +159,7 @@ namespace E_CommerceProject.WebAPI.Controllers
                 var url = $"{Request.Scheme}://{Request.Host}/Images/{newName}";
                 urls.Add(url);
             }
-            return (urls);
+            return urls;
         }
     }
 }

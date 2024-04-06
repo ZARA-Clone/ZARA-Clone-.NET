@@ -4,9 +4,9 @@ using E_CommerceProject.Models.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace E_CommerceProject.WebAPI.Controllers
+namespace E_CommerceProject.WebAPI.Controllers.Dashboard
 {
-    [Route("dashboard/api/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -41,16 +41,14 @@ namespace E_CommerceProject.WebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("getAll")]
-        public async Task<ActionResult<List<UserDto>>> Get()
+        public async Task<ActionResult<List<UserDto>>> GetAllUsers()
         {
             _logger.LogInformation($"Get all products");
             var items = await _userService.GetAll();
             return items;
         }
 
-        [HttpDelete]
-        [Route("{userId}")]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(string id)
         {
             _logger.LogInformation($"Deleting product with id {id}");

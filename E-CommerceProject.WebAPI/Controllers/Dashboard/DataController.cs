@@ -3,7 +3,7 @@ using E_CommerceProject.Business.Dashborad.Data;
 using E_CommerceProject.Business.Dashborad.Data.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
-namespace E_CommerceProject.WebAPI.Controllers
+namespace E_CommerceProject.WebAPI.Controllers.Dashboard
 {
     [Route("dashboard/api/[controller]")]
     [ApiController]
@@ -25,7 +25,7 @@ namespace E_CommerceProject.WebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<DataReadDto>> GetData()
         {
-            var  result = await _dataService.GetDataDashboard();
+            var result = await _dataService.GetDataDashboard();
             return result;
         }
     }

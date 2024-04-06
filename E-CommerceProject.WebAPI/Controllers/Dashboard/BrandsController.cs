@@ -4,9 +4,9 @@ using E_CommerceProject.Business.Brands.Interfaces;
 using E_CommerceProject.Business.Shared;
 using Microsoft.AspNetCore.Mvc;
 
-namespace E_CommerceProject.WebAPI.Controllers
+namespace E_CommerceProject.WebAPI.Controllers.Dashboard
 {
-    [Route("api/[controller]")]
+    [Route("dashboard/api/[controller]")]
     [ApiController]
     public class BrandsController : ControllerBase
     {
@@ -25,7 +25,7 @@ namespace E_CommerceProject.WebAPI.Controllers
 
         [HttpGet]
         public async Task<ActionResult<PageList<BrandReadOnlyDto>>> Get(string? name
-            , int? categoryId , int pageIndex = 0, int pageSize = 10)
+            , int? categoryId, int pageIndex = 0, int pageSize = 10)
         {
             _logger.LogInformation($"Get brands with  '{categoryId}'," +
             $", page index '{pageIndex}' and page size '{pageSize}'.");
@@ -40,13 +40,13 @@ namespace E_CommerceProject.WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<BrandReadOnlyDto>> Get(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 _logger.LogWarning($"Invalid id parameter value {id}");
                 return BadRequest();
             }
             var item = await _brandsService.GetById(id.Value);
-            if(item == null)
+            if (item == null)
             {
                 _logger.LogWarning($"There is no brand with id: {id}");
                 return NotFound();
@@ -144,7 +144,7 @@ namespace E_CommerceProject.WebAPI.Controllers
             }
         }
 
-        
+
     }
 
 }
