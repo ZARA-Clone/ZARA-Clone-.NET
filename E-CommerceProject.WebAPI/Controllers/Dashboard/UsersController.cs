@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace E_CommerceProject.WebAPI.Controllers.Dashboard
 {
-    [Route("api/[controller]")]
+    [Route("dashboard/api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
