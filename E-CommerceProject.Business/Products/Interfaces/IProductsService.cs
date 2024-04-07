@@ -10,7 +10,7 @@ namespace E_CommerceProject.Business.Products.Interfaces
         Task<List<ProductDto>> GetAll();
         Task<ProductDto> GetById(int id);
         Task<ServiceResponse> Add(AddProductDto productDto);
-        Task<ServiceResponse> Edit(int id, ProductDto productDto);
+        Task<ServiceResponse> Edit(int id, AddProductDto productDto);
         Task<ServiceResponse> Delete(int id);
     }
 }

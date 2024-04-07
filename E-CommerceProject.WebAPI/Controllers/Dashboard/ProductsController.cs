@@ -81,7 +81,7 @@ namespace E_CommerceProject.WebAPI.Controllers.Dashboard
             }
         }
         [HttpPut("{id}")]
-        public async Task<ActionResult<ProductDto>> Edit(int id, ProductDto productDto)
+        public async Task<ActionResult<AddProductDto>> Edit(int id, AddProductDto productDto)
         {
             _logger.LogInformation($"Updating product with id: {id}");
             if (id != productDto.Id)

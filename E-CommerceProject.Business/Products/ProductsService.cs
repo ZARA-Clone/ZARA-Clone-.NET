@@ -70,7 +70,7 @@ namespace E_CommerceProject.Business.Products
             return ServiceResponse.Success();
         }
 
-        public async Task<ServiceResponse> Edit(int id, ProductDto productDto)
+        public async Task<ServiceResponse> Edit(int id, AddProductDto productDto)
         {
             if (id <= 0) throw new ArgumentOutOfRangeException("id", "id cannot be negative or empty");
             if (productDto == null) throw new ArgumentNullException("productDto", "Product cannot be null");

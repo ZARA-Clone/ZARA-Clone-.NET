@@ -30,6 +30,7 @@ namespace E_CommerceProject.Business.Dashborad.Data
                 TotalUsers = usersCount,
                 TotalProducts = productsCount,
                 TotalSells = sells.Sum(c => c.TotalPrice),
+                TotalOrders = ordersCount
             };
             return result;
         }
