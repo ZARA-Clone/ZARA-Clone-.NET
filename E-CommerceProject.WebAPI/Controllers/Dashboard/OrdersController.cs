@@ -11,10 +11,10 @@ namespace E_CommerceProject.WebAPI.Controllers.Dashboard
     public class OrdersController : ControllerBase
     {
         private readonly IOrdersService _ordersService;
-        private readonly ILogger _logger;
+        private readonly ILogger<OrdersController> _logger;
 
         public OrdersController(IOrdersService ordersService
-            , ILogger logger)
+            , ILogger<OrdersController> logger)
         {
             _ordersService = ordersService;
             _logger = logger;

@@ -21,6 +21,12 @@ namespace E_CommerceProject.Infrastructure.Repositories.UserDashboardRepository
                 .FirstOrDefaultAsync(c => c.Id == key);
         }
 
-        
+        public override async Task<List<ApplicationUser>> GetAllAsync()
+        {
+            return await _dbContext.Set<ApplicationUser>()
+                .Include(c => c.Orders)
+                .ToListAsync();
+        }
+
     }
 }

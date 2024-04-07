@@ -13,9 +13,6 @@
     public class UserDashboardOrderDto
     {
         public int Id { get; set; }
-        public string OrderStatus { get; set; }
         public DateTime OrderDate { get; set; } = DateTime.Now;
-        public DateTime? DeliverdDate { get; set; }
-
     }
 }

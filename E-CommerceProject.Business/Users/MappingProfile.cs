@@ -10,7 +10,7 @@ namespace E_CommerceProject.Business.Users
         {
             CreateMap<ApplicationUser, UserDto>()
                 .ReverseMap();
-
+            
         }
     }
 }
