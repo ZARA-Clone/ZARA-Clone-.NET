@@ -1,11 +1,13 @@
 ﻿using E_CommerceProject.Business.Users.Dtos;
 using E_CommerceProject.Business.Users.Interfaces;
 using E_CommerceProject.Models.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_CommerceProject.WebAPI.Controllers.Dashboard
 {
+    [Authorize(Roles = "Admin")]
     [Route("dashboard/api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase

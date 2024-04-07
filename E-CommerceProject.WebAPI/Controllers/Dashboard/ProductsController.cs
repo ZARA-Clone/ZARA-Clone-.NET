@@ -10,7 +10,6 @@ namespace E_CommerceProject.WebAPI.Controllers.Dashboard
     [Authorize(Roles = "Admin")]
     [Route("dashboard/api/[controller]")]
     [ApiController]
-    [Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly IProductsService _productsService;

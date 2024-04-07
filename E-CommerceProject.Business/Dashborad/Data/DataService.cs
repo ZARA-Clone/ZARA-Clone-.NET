@@ -1,4 +1,5 @@
 ﻿using E_CommerceProject.Business.Dashborad.Data.Dtos;
+using E_CommerceProject.Business.Dashborad.Orders.Dtos;
 using E_CommerceProject.Infrastructure.Core.Base;
 
 namespace E_CommerceProject.Business.Dashborad.Data
@@ -13,7 +14,7 @@ namespace E_CommerceProject.Business.Dashborad.Data
         }
         public async Task<DataReadDto> GetDataDashboard()
         {
-            var orders = await _unitOfWork.DateRepository.GetOrdersWithData();
+            var orders = await _unitOfWork.OrderRepository.GetOrdersWithData();
             var sells = orders.Select(o => new OrderReadDto
             {
                 TotalPrice = o.OrdersDetails
@@ -22,6 +23,7 @@ namespace E_CommerceProject.Business.Dashborad.Data
 
             var usersCount = _unitOfWork.UserDashboardRepository.GetAllAsync().Result.Count();
             var productsCount = _unitOfWork.ProductsRepository.GetAllAsync().Result.Count();
+            var ordersCount = _unitOfWork.OrderRepository.GetAllAsync().Result.Count();
 
             var result = new DataReadDto
             {

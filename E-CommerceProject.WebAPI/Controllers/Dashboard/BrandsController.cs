@@ -2,10 +2,12 @@
 using E_CommerceProject.Business.Brands.Dtos;
 using E_CommerceProject.Business.Brands.Interfaces;
 using E_CommerceProject.Business.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_CommerceProject.WebAPI.Controllers.Dashboard
 {
+    [Authorize(Roles = "Admin")]
     [Route("dashboard/api/[controller]")]
     [ApiController]
     public class BrandsController : ControllerBase

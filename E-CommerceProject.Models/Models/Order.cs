@@ -1,6 +1,4 @@
-﻿using E_CommerceProject.Models.Enums;
-using E_CommerceProject.Models.Models;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using E_CommerceProject.Models.Models;
 
 namespace E_CommerceProject.Models
 {

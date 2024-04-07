@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using E_CommerceProject.Business.Dashborad.Data;
 using E_CommerceProject.Business.Dashborad.Data.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_CommerceProject.WebAPI.Controllers.Dashboard
 {
+    [Authorize(Roles = "Admin")]
     [Route("dashboard/api/[controller]")]
     [ApiController]
     public class DataController : ControllerBase
