@@ -26,6 +26,7 @@ namespace E_CommerceProject.Business.Users
                     Email = user.Email,
                     Country = user.Country,
                     PhoneNumber = user.PhoneNumber,
+                    Address = user.Address,
                     Orders = user.Orders.Select(o => new UserDashboardOrderDto
                     {
                         Id = o.Id,
@@ -51,6 +52,7 @@ namespace E_CommerceProject.Business.Users
                     Id = item.Id,
                     Email = item.Email,
                     UserName = item.UserName,
+                    Address = item.Address,
                     Orders = item.Orders.Select(o => new UserDashboardOrderDto
                     {
                         Id = o.Id,
