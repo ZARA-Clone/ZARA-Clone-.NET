@@ -1,6 +1,7 @@
 ﻿using E_CommerceProject.Business.Brands;
 using E_CommerceProject.Business.Brands.Interfaces;
 using E_CommerceProject.Business.Dashborad.Data;
+using E_CommerceProject.Business.Dashborad.Orders;
 using E_CommerceProject.Business.Products;
 using E_CommerceProject.Business.Products.Interfaces;
 using E_CommerceProject.Business.Users;
@@ -13,10 +14,11 @@ namespace E_CommerceProject.Business.Shared
     {
         public static IServiceCollection AddServices(this IServiceCollection serviceCollection)
         {
-            serviceCollection.AddTransient<IBrandsService, BrandsService>();
-            serviceCollection.AddTransient<IProductsService, ProductsService>();
+            serviceCollection.AddScoped<IBrandsService, BrandsService>();
+            serviceCollection.AddScoped<IProductsService, ProductsService>();
             serviceCollection.AddScoped<IUserService, UsersService>();
             serviceCollection.AddScoped<IDataService, DataService>();
+            serviceCollection.AddScoped<IOrdersService, OrdersService>();
 
 
             return serviceCollection;
