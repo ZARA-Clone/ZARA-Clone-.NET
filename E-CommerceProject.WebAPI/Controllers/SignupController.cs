@@ -41,6 +41,23 @@ namespace E_CommerceProject.WebAPI.Controllers
         }
 
 
+
+
+
+        [HttpPost("checkNameExists")]
+        public IActionResult CheckNameExists([FromBody] RegReq userData)
+        {
+            if (userData == null || string.IsNullOrWhiteSpace(userData.UserName))
+            {
+                return BadRequest("Invalid user data or name is missing.");
+            }
+
+            var userWithName = _context.Users.FirstOrDefault(u => u.UserName == userData.UserName);
+            return Ok(userWithName != null);
+        }
+
+
+
         [HttpPost]
         public async Task<IActionResult> Register([FromBody] RegReq newuser)
         {

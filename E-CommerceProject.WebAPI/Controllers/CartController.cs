@@ -14,8 +14,10 @@ using System.Security.Claims;
 
 namespace E_CommerceProject.WebAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
+ 
     public class CartController : ControllerBase
     {
         private readonly ICartRepository _cartRepository;
@@ -23,36 +25,20 @@ namespace E_CommerceProject.WebAPI.Controllers
         private readonly UserManager<ApplicationUser> userManager;
         private readonly DecodeTokenRepository decode;
 
-        public CartController(ICartRepository cartRepository, ECommerceContext _context, UserManager<ApplicationUser> userManager, DecodeTokenRepository _decode)
+        public CartController(ICartRepository cartRepository, ECommerceContext _context, UserManager<ApplicationUser> userManager)
         {
             _cartRepository = cartRepository;
             context = _context;
             this.userManager = userManager;
-            decode = _decode;
+          
         }
-
+        
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetCartItems([FromRoute] string userId)
         {
-            #region testing
 
-            // Add Dummy User Cart
-            List<UserCart> ListUserCart = new List<UserCart> {
-                new UserCart { ProductId = 1, UserId = userId, Quantity = 1, SelectedSize = Size.Small },
-                new UserCart { ProductId = 1, UserId = userId, Quantity = 1, SelectedSize = Size.Medium },
-                new UserCart { ProductId = 1, UserId = userId, Quantity = 1, SelectedSize = Size.Large },
-
-            };
-            // push to Db if User Cart is Empty
-            if (_cartRepository.GetCartItemsAsync(userId).Result.Count == 0)
-            {
-                foreach (var item in ListUserCart)
-                {
-                    await _cartRepository.AddItemToCart(item);
-                }
-            }
-            #endregion
-
+            var user = await userManager.GetUserAsync(User);
+            userId = user.Id;
             var cartItems = await _cartRepository.GetCartItemsAsync(userId);
 
 
@@ -123,9 +109,10 @@ namespace E_CommerceProject.WebAPI.Controllers
 
 
         [HttpPut("update-quantity/{userId}/{productId}")]
-        public IActionResult updateProductQuantity(string userId, int productId, int quantity, int size)
+        public async Task<IActionResult> updateProductQuantity(string userId, int productId, int quantity, int size)
         {
-
+            var user = await userManager.GetUserAsync(User);
+            userId = user.Id;
             bool success = _cartRepository.updateProductQuantity(userId, productId, quantity, size);
             if (success)
             {
@@ -141,6 +128,8 @@ namespace E_CommerceProject.WebAPI.Controllers
         public async Task<IActionResult> DeleteItemBySize(string userId, int productId, int size)
         {
 
+            var user = await userManager.GetUserAsync(User);
+            userId = user.Id;
             try
             {
                 await _cartRepository.DeleteItem(userId, productId, size);
@@ -156,6 +145,7 @@ namespace E_CommerceProject.WebAPI.Controllers
         [HttpPost("AddToCart")]
         public async Task<IActionResult> AddToCart(int productId, int size)
         {
+
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             var product = context.Products
