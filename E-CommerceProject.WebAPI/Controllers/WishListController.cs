@@ -62,10 +62,8 @@ namespace E_CommerceProject.WebAPI.Controllers
                 WLDto.Add(w);
             }
             return Ok(WLDto);
-
-
-
         }
+
         [Authorize]
         [HttpPost("add")]
         public async Task<IActionResult> AddToWishList(int productId)

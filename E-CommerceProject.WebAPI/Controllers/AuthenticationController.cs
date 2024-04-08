@@ -18,12 +18,11 @@ namespace E_CommerceProject.WebAPI.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
 
-        public AuthenticationController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IEmailService emailService)
+        public AuthenticationController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IEmailService emailService)
         {
-            _configuration = configuration;
+          
             _userManager = userManager;
             _roleManager = roleManager;
             _emailService = emailService;
@@ -39,7 +38,7 @@ namespace E_CommerceProject.WebAPI.Controllers
             //Check if password is correct
             if (user != null && await _userManager.CheckPasswordAsync(user, loginModel.Password))
             {
-                var userrole = await _userManager.GetRolesAsync(user);
+                //var userrole = await _userManager.GetRolesAsync(user);
 
                 //claimlist creation
                 var authenticationClaims = new List<Claim>
@@ -50,9 +49,11 @@ namespace E_CommerceProject.WebAPI.Controllers
              new Claim(ClaimTypes.NameIdentifier,user.Id),
              new Claim(ClaimTypes.Role, "customer"),
              new Claim(ClaimTypes.MobilePhone,user.PhoneNumber),
+             new Claim(ClaimTypes.Name,user.UserName),
+           
 
                 //global user id unique
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())//bykhaly el token uniqe (json token id)
          };
                 var userRoles = await _userManager.GetRolesAsync(user);
                 //Add role to claims
@@ -68,9 +69,10 @@ namespace E_CommerceProject.WebAPI.Controllers
                 return Ok(new
                 {
                     token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
+
                 });
             }
-            return Unauthorized();
+            return Unauthorized();//user not found
         }
 
         private JwtSecurityToken GetToken(List<Claim> authenticationClaims)
@@ -118,7 +120,7 @@ namespace E_CommerceProject.WebAPI.Controllers
                 _emailService.SendEmail(message);
 
                 // Include token in the response object
-                var response = new Response
+                var response = new Response //da el hygely f angular
                 {
                     Status = "success",
                     Message = $"Link to reset password sent successfully to email {user.Email}",

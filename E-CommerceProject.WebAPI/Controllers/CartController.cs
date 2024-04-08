@@ -153,7 +153,7 @@ namespace E_CommerceProject.WebAPI.Controllers
             }
         }
 
-        [HttpPost("AddToCart")]
+        [HttpGet("AddToCart")]
         public async Task<IActionResult> AddToCart(int productId, int size)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

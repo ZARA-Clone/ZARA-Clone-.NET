@@ -21,6 +21,7 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using Stripe;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace E_CommerceProject.WebAPI
 {
@@ -67,7 +68,10 @@ namespace E_CommerceProject.WebAPI
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ECommerceContext>()
                 .AddDefaultTokenProviders();//for change email 
- 
+
+            ////add jsonserialization
+            //builder.Services.AddControllers().AddJsonOptions(x =>
+            //x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
             builder.Services.AddAuthentication(options =>
             {
