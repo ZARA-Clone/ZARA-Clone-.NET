@@ -50,6 +50,7 @@ namespace E_CommerceProject.WebAPI.Controllers
              new Claim(ClaimTypes.NameIdentifier,user.Id),
              new Claim(ClaimTypes.Role, "customer"),
              new Claim(ClaimTypes.MobilePhone,user.PhoneNumber),
+             new Claim(ClaimTypes.Name,user.UserName),
 
                 //global user id unique
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
