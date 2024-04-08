@@ -1,6 +1,7 @@
 ﻿using E_CommerceProject.Business.Products.Dtos;
 using E_CommerceProject.Business.Products.Interfaces;
 using E_CommerceProject.Business.Shared;
+using E_CommerceProject.Business.WishList.Dto;
 using E_CommerceProject.Infrastructure.Context;
 using E_CommerceProject.Models;
 using E_CommerceProject.Models.Enums;
@@ -19,11 +20,11 @@ namespace E_CommerceProject.WebAPI.Controllers
         private readonly ECommerceContext _context;
 
         public ProductsController(IProductsService productsService
-            , ILogger<ProductsController> logger , ECommerceContext context)
+            , ILogger<ProductsController> logger, ECommerceContext context)
         {
             _productsService = productsService;
             _logger = logger;
-            _context = context ;
+            _context = context;
         }
 
         [HttpGet]
@@ -72,10 +73,10 @@ namespace E_CommerceProject.WebAPI.Controllers
 
             List<SizeQuantityDto> sizes = product.ProductSizes
                 .Select(size => new SizeQuantityDto
-                    {
-                        Size = size.Size,
-                        Quantity = size.Quantity
-                    })
+                {
+                    Size = size.Size,
+                    Quantity = size.Quantity
+                })
                 .ToList();
             ProductDetailsDto PD = new ProductDetailsDto()
             {
@@ -91,11 +92,54 @@ namespace E_CommerceProject.WebAPI.Controllers
             return Ok(PD);
         }
         [HttpGet("brand/{id}")]
-        public ActionResult GetByBrandId(int id)
+public ActionResult GetByBrandId(int id)
         {
             List<Product> products = _context.Products.Include(p => p.ProductSizes)
                 .Include(p => p.ProductImages)
                 .Where(p => p.BrandId == id).ToList();
+            if (products == null)
+            {
+                return NotFound();
+            }
+        
+
+            List<ProductBrowseDto> PBD = new List<ProductBrowseDto>();
+
+            foreach (var product in products)
+            {
+                List<SizeQuantityDto> sizes = product.ProductSizes
+                .Select(size => new SizeQuantityDto
+                {
+                    Size = size.Size,
+                    Quantity = size.Quantity
+                })
+                .ToList();
+                var productImages = product.ProductImages.Select(img => img.Url).ToList();
+
+                ProductBrowseDto PB = new ProductBrowseDto()
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Price = product.Price,
+                    ImgUrl = productImages[0],
+                    BrandId = product.BrandId,
+                    Sizes = sizes
+
+                };
+                PBD.Add(PB);
+
+            }
+            return Ok(PBD);
+
+        }
+
+
+        [HttpGet("getallproducts")]
+        public ActionResult GetAllProducts()
+        {
+            List<Product> products = _context.Products.Include(p => p.ProductSizes)
+                .Include(p => p.ProductImages)
+                .ToList();
             if (products == null)
             {
                 return NotFound();
@@ -134,12 +178,5 @@ namespace E_CommerceProject.WebAPI.Controllers
 
 
 
-
-
-
-        
-
     }
-
-
 }
