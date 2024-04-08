@@ -120,7 +120,10 @@ namespace E_CommerceProject.WebAPI.Controllers
             };
 
 
-            var cartItems = _context.UserCarts.Where(c => c.UserId == userId).ToList();
+            var cartItems = _context
+                .UserCarts
+                .Include(c=> c.Product)
+                .Where(c => c.UserId == userId).ToList();
             foreach (var cartItem in cartItems)
             {
                 var orderDetail = new OrderDetails
