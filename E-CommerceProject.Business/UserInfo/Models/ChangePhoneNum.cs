@@ -8,7 +8,7 @@ namespace E_CommerceProject.Business.UserInfo.Models
 {
     public class ChangePhoneNum
     {
-        public string Newpass {  get; set; }    
+        public string Newphonenum {  get; set; }    
 
     }
 }
