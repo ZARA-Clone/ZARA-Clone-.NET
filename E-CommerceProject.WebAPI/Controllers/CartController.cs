@@ -16,43 +16,23 @@ namespace E_CommerceProject.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CartController : ControllerBase
     {
         private readonly ICartRepository _cartRepository;
         private readonly ECommerceContext context;
         private readonly UserManager<ApplicationUser> userManager;
-        private readonly DecodeTokenRepository decode;
 
-        public CartController(ICartRepository cartRepository, ECommerceContext _context, UserManager<ApplicationUser> userManager, DecodeTokenRepository _decode)
+        public CartController(ICartRepository cartRepository, ECommerceContext _context, UserManager<ApplicationUser> userManager)
         {
             _cartRepository = cartRepository;
             context = _context;
             this.userManager = userManager;
-            decode = _decode;
         }
 
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetCartItems([FromRoute] string userId)
         {
-            #region testing
-
-            // Add Dummy User Cart
-            List<UserCart> ListUserCart = new List<UserCart> {
-                new UserCart { ProductId = 1, UserId = userId, Quantity = 1, SelectedSize = Size.Small },
-                new UserCart { ProductId = 1, UserId = userId, Quantity = 1, SelectedSize = Size.Medium },
-                new UserCart { ProductId = 1, UserId = userId, Quantity = 1, SelectedSize = Size.Large },
-
-            };
-            // push to Db if User Cart is Empty
-            if (_cartRepository.GetCartItemsAsync(userId).Result.Count == 0)
-            {
-                foreach (var item in ListUserCart)
-                {
-                    await _cartRepository.AddItemToCart(item);
-                }
-            }
-            #endregion
-
             var cartItems = await _cartRepository.GetCartItemsAsync(userId);
 
 
@@ -152,8 +132,8 @@ namespace E_CommerceProject.WebAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        [HttpPost("AddToCart")]
+        [Authorize]
+        [HttpGet("AddToCart")]
         public async Task<IActionResult> AddToCart(int productId, int size)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -165,14 +145,14 @@ namespace E_CommerceProject.WebAPI.Controllers
 
             if (product == null)
             {
-                return NotFound();
+                return NotFound("Product not found");
             }
 
             var user = await userManager.FindByIdAsync(userId);
 
                 if (user == null)
                 {
-                    return NotFound();
+                    return NotFound("User not found");
                 }
 
             var existingCartItem = context.UserCarts.FirstOrDefault(cart =>

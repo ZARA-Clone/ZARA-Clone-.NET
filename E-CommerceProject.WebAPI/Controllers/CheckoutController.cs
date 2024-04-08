@@ -29,7 +29,7 @@ namespace E_CommerceProject.WebAPI.Controllers
         }
         [Authorize]
         [HttpPost("process-payment")]
-        public async Task<IActionResult> ProcessPayment([FromBody] CheckoutRequest paymentRequest)
+        public async Task<IActionResult> ProcessPayment(CheckoutRequest paymentRequest)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace E_CommerceProject.WebAPI.Controllers
                     OrderDate = paymentRequest.AdditionalData.OrderDate
                 };
 
-                var cartItems = _context.UserCarts.Where(c => c.UserId == userId).ToList();
+                var cartItems = _context.UserCarts.Include(c => c.Product).Where(c => c.UserId == userId).ToList();
                 foreach (var cartItem in cartItems)
                 {
                     var orderDetail = new OrderDetails
@@ -92,7 +92,7 @@ namespace E_CommerceProject.WebAPI.Controllers
                 _context.Orders.Add(order);
                 _context.SaveChanges();
 
-                return Ok("Payment successful");
+                return Ok(new { message = "Order Placed Successfully" });
             }
             catch (StripeException e)
             {
@@ -102,25 +102,27 @@ namespace E_CommerceProject.WebAPI.Controllers
 
 
         [Authorize]
-        [HttpPost("Pay-On-Delivery")]
-        public async Task<IActionResult> PayOnDelivery(OrderDate orderdate)
+        [HttpGet("Pay-On-Delivery")]
+        public async Task<IActionResult> PayOnDelivery()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                var user = await _userManager.FindByIdAsync(userId);
-                if (user == null)
-                {
-                    return NotFound();
-                }
-
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
 
             var order = new Order
             {
                 UserId = userId,
-                OrderDate = orderdate.Orderdate,
+                OrderDate = DateTime.Now,
             };
 
+            // Save the order to get the Id
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
 
-            var cartItems = _context.UserCarts.Where(c => c.UserId == userId).ToList();
+            var cartItems = _context.UserCarts.Include(c=>c.Product).Where(c => c.UserId == userId).ToList();
             foreach (var cartItem in cartItems)
             {
                 var orderDetail = new OrderDetails
@@ -142,12 +144,10 @@ namespace E_CommerceProject.WebAPI.Controllers
             }
 
             _context.UserCarts.RemoveRange(cartItems);
-            _context.Orders.Add(order);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync(); // Save changes after modifying the cart items
 
-            return Ok("Order Placed Successfully");
+            return Ok(new { message = "Order Placed Successfully" });
         }
-
 
         [Authorize]
         [HttpGet("cartcontent")]
@@ -160,7 +160,7 @@ namespace E_CommerceProject.WebAPI.Controllers
                 return NotFound();
             }
 
-            var cartItems = _context.UserCarts.Where(c => c.UserId == userId).ToList();
+            var cartItems = _context.UserCarts.Include(c=>c.Product.ProductImages).Where(c => c.UserId == userId).ToList();
             List<CartContentDto> cartContent = new List<CartContentDto>();
             foreach (var cartItem in cartItems)
             {

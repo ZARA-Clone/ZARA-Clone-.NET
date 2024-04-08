@@ -1,5 +1,8 @@
 ﻿using E_CommerceProject.Infrastructure.Context;
+using E_CommerceProject.Models.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace E_CommerceProject.WebAPI.Controllers
 {
@@ -8,8 +11,10 @@ namespace E_CommerceProject.WebAPI.Controllers
     public class HeaderController : ControllerBase
     {
         private readonly ECommerceContext _context;
-        public HeaderController(ECommerceContext context) {
+        private readonly UserManager<ApplicationUser> _userManager;
+        public HeaderController(ECommerceContext context,UserManager<ApplicationUser> userManager) {
             _context = context;
+            _userManager = userManager;
         }
         [HttpGet("getallcat")]
         public IActionResult GetAllCategories ()
@@ -34,6 +39,21 @@ namespace E_CommerceProject.WebAPI.Controllers
                                            .Select(b => new
                                            {b.Id, b.Name, b.CategoryId}).ToList();
             return Ok(allbrands);
+        }
+        [HttpGet("getcartlength")]
+        public async Task<IActionResult> GetCartLength()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            var userCarts = _context.UserCarts.Where(c => c.UserId == userId).ToList();
+
+            int cartLength = userCarts.Sum(cart => cart.Quantity);
+
+            return Ok(new { cartLength });
         }
     }
 }

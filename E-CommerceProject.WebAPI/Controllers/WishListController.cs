@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using E_CommerceProject.Business.WishList.Dto;
 using Microsoft.EntityFrameworkCore;
+using E_CommerceProject.Business.Emails.Dtos;
 
 namespace E_CommerceProject.WebAPI.Controllers
 {
@@ -28,7 +29,7 @@ namespace E_CommerceProject.WebAPI.Controllers
             _userManager = userManager;
 
         }
-
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -67,7 +68,7 @@ namespace E_CommerceProject.WebAPI.Controllers
 
         }
         [Authorize]
-        [HttpPost("add")]
+        [HttpGet("add")]
         public async Task<IActionResult> AddToWishList(int productId)
 
         {
@@ -99,7 +100,7 @@ namespace E_CommerceProject.WebAPI.Controllers
             _context.WishLists.Add(wishListItem);
             _context.SaveChanges();
 
-            return Ok("Product added to wishlist successfully");
+            return Ok(new {message= "Product added to wishlist successfully" });
         }
 
 
@@ -118,7 +119,7 @@ namespace E_CommerceProject.WebAPI.Controllers
             _context.WishLists.Remove(wishListItem);
             _context.SaveChanges();
 
-            return Ok("Product removed from wishlist successfully");
+            return Ok();
         }
     }
 }
