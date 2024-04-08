@@ -23,7 +23,6 @@ namespace E_CommerceProject.WebAPI.Controllers
         private readonly ICartRepository _cartRepository;
         private readonly ECommerceContext context;
         private readonly UserManager<ApplicationUser> userManager;
-        private readonly DecodeTokenRepository decode;
 
         public CartController(ICartRepository cartRepository, ECommerceContext _context, UserManager<ApplicationUser> userManager)
         {
@@ -141,8 +140,8 @@ namespace E_CommerceProject.WebAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        [HttpPost("AddToCart")]
+        [Authorize]
+        [HttpGet("AddToCart")]
         public async Task<IActionResult> AddToCart(int productId, int size)
         {
 
@@ -155,14 +154,14 @@ namespace E_CommerceProject.WebAPI.Controllers
 
             if (product == null)
             {
-                return NotFound();
+                return NotFound("Product not found");
             }
 
             var user = await userManager.FindByIdAsync(userId);
 
                 if (user == null)
                 {
-                    return NotFound();
+                    return NotFound("User not found");
                 }
 
             var existingCartItem = context.UserCarts.FirstOrDefault(cart =>

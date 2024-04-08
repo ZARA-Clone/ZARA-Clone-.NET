@@ -161,18 +161,6 @@ namespace E_CommerceProject.Infrastructure.Context
             modelBuilder.Entity<Brand>()
             .HasData(brands);
 
-            List<Product> initialProducts = new List<Product>()
-            {
-                new Product { Id = 1,Name = "product1", Price = 1000, Discount = 10,Description = "test p1", BrandId = 1 },
-                new Product { Id = 2,Name = "product2", Price = 2000, Discount = 20,Description = "test p2", BrandId = 1 },
-                new Product { Id = 3,Name = "product3", Price = 3000, Discount = 30,Description = "test p3", BrandId = 2 },
-                new Product { Id = 4,Name = "product4", Price = 4000, Discount = 40,Description = "test p4", BrandId = 3 },
-                new Product { Id = 5,Name = "product5", Price = 5000, Discount = 50,Description = "test p5", BrandId = 3 },
-            };
-
-            modelBuilder.Entity<Product>()
-            .HasData(initialProducts);
-
         }
     }
 }

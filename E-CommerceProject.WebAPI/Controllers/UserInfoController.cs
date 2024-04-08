@@ -68,6 +68,26 @@ namespace E_CommerceProject.WebAPI.Controllers
             if (!result.Succeeded) { return BadRequest(); }
             return Ok("your password changed successfully");
         }
-       
+        [HttpGet("GetUserInfo")]
+        public async Task<IActionResult> GetUserInfo()
+        {
+            // Retrieve the current user
+            var user = await userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            // Return user information
+            var userInfo = new
+            {
+                UserName = user.UserName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber
+            };
+            return Ok(userInfo);
+        }
+
     }
 }

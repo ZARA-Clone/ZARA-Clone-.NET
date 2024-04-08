@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace E_CommerceProject.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class allinone : Migration
+    public partial class all : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,6 +32,7 @@ namespace E_CommerceProject.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -189,21 +190,19 @@ namespace E_CommerceProject.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserAddresses",
+                name: "Orders",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Street = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ZipCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserAddresses", x => x.Id);
+                    table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserAddresses_AspNetUsers_UserId",
+                        name: "FK_Orders_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -231,33 +230,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    OrderStatus = table.Column<int>(type: "int", nullable: false),
-                    UserAddressId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Orders_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Orders_UserAddresses_UserAddressId",
-                        column: x => x.UserAddressId,
-                        principalTable: "UserAddresses",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -265,7 +237,7 @@ namespace E_CommerceProject.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Discount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Discount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     BrandId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -456,18 +428,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
                     { 12, 3, "Tops" }
                 });
 
-            migrationBuilder.InsertData(
-                table: "Products",
-                columns: new[] { "Id", "BrandId", "Description", "Discount", "Name", "Price" },
-                values: new object[,]
-                {
-                    { 1, 1, "test p1", 10m, "product1", 1000m },
-                    { 2, 1, "test p2", 20m, "product2", 2000m },
-                    { 3, 2, "test p3", 30m, "product3", 3000m },
-                    { 4, 3, "test p4", 40m, "product4", 4000m },
-                    { 5, 3, "test p5", 50m, "product5", 5000m }
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -523,11 +483,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_UserAddressId",
-                table: "Orders",
-                column: "UserAddressId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Orders_UserId",
                 table: "Orders",
                 column: "UserId");
@@ -553,11 +508,6 @@ namespace E_CommerceProject.Infrastructure.Migrations
                 column: "ProductID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserAddresses_UserId",
-                table: "UserAddresses",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_UserCarts_ProductId",
                 table: "UserCarts",
                 column: "ProductId");
@@ -575,8 +525,7 @@ namespace E_CommerceProject.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_WishLists_UserId",
                 table: "WishLists",
-                column: "UserId",
-                unique: true);
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -628,13 +577,10 @@ namespace E_CommerceProject.Infrastructure.Migrations
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "UserAddresses");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Brands");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Categories");
