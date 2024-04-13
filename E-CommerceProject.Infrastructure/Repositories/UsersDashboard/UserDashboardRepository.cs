@@ -16,7 +16,7 @@ namespace E_CommerceProject.Infrastructure.Repositories.UserDashboardRepository
         }
         public override async Task<ApplicationUser?> GetByIdAsync(string key)
         {
-            return await  _dbContext.Set<ApplicationUser>()
+            return await _dbContext.Set<ApplicationUser>()
                 .Include(c => c.Orders)
                 .FirstOrDefaultAsync(c => c.Id == key);
         }
@@ -28,5 +28,20 @@ namespace E_CommerceProject.Infrastructure.Repositories.UserDashboardRepository
                 .ToListAsync();
         }
 
+        public async Task<(List<ApplicationUser> items, int totalItemsCount)> Get(int pageIndex, int pageSize)
+        {
+            var users = _dbContext.Set<ApplicationUser>()
+                .Include(c => c.Orders)
+                .AsQueryable();
+
+            var totalItems = await users.CountAsync();
+            var items = await users.OrderBy(c => c.Id)
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalItems);
+        }
     }
 }
+

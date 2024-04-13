@@ -14,6 +14,30 @@ namespace E_CommerceProject.Business.Users
             _unitOfWork = unitOfWork;
         }
 
+        public async Task<PageList<UserDto>> Get(int pageIndex = 0, int pageSize = 10)
+        {
+            var users = await _unitOfWork.UserDashboardRepository.Get(pageIndex, pageSize);
+            if (users.items.Any())
+            {
+                var result = users.items.Select(user => new UserDto
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    Country = user.Country,
+                    PhoneNumber = user.PhoneNumber,
+                    Address = user.Address,
+                    Orders = user.Orders.Select(o => new UserDashboardOrderDto
+                    {
+                        Id = o.Id,
+                        OrderDate = o.OrderDate,
+                    })
+                }).ToList();
+
+                return new PageList<UserDto>(result, pageIndex, pageSize, users.totalItemsCount);
+            }
+            return null;
+        }
         public async Task<List<UserDto>> GetAll()
         {
             var users = await _unitOfWork.UserDashboardRepository.GetAllAsync();
@@ -72,5 +96,6 @@ namespace E_CommerceProject.Business.Users
             await _unitOfWork.SaveAsync();
             return ServiceResponse.Success();
         }
+
     }
 }

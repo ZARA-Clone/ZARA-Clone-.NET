@@ -13,7 +13,24 @@ namespace E_CommerceProject.Business.Dashborad.Orders
             _unitOfWork = unitOfWork;
         }
 
-        
+        public async Task<PageList<OrderReadDto>> Get(int pageIndex, int pageSize)
+        {
+            var result = await _unitOfWork.OrderRepository.Get(pageIndex, pageSize);
+            var orderDtos = result.items
+                .Select(o => new OrderReadDto
+                {
+                    Id = o.Id,
+                    OrderDate = o.OrderDate,
+                    UserId = o.User.Id,
+                    UserName = (o.User.UserName),
+                    ProductCount = o.OrdersDetails.Count(),
+                    TotalPrice = o.OrdersDetails
+                    .Sum(op => Math.Round((op.Product.Price - (op.Product.Price * (op.Product.Discount / 100))) * op.Quantity, 0)),
+                }).ToList();
+
+            return new PageList<OrderReadDto>(orderDtos, pageIndex, pageSize, result.totalItemsCount);
+        }
+
         public async Task<List<OrderReadDto>> GetAllOrders()
         {
             var orders = await _unitOfWork.OrderRepository.GetOrdersWithData();
@@ -78,5 +95,7 @@ namespace E_CommerceProject.Business.Dashborad.Orders
             await _unitOfWork.SaveAsync();
             return ServiceResponse.Success();
         }
+
+        
     }
 }

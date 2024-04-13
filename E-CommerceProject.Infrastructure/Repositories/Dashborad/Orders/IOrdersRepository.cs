@@ -7,6 +7,7 @@ namespace E_CommerceProject.Infrastructure.Repositories.Dashborad.Orders
 {
     public interface IOrdersRepository : IRepositoryAsync<Order, int>
     {
+        Task<(List<Order> items, int totalItemsCount)> Get(int pageIndex, int pageSize);
         Task<List<Order>> GetOrdersWithData();
         Task<Order> GetOrderWithProducts(int OrderId);
         Task<int> GetLastUserOrder(string userId);
@@ -18,6 +19,27 @@ namespace E_CommerceProject.Infrastructure.Repositories.Dashborad.Orders
         public OrderRepository(ECommerceContext dbContext) : base(dbContext)
         {
             _dbContext = dbContext;
+        }
+
+        public async Task<(List<Order> items, int totalItemsCount)> Get(int pageIndex, int pageSize)
+        {
+            var orders = _dbContext.Set<Order>()
+                .Include(c => c.User)
+                .Include(c => c.OrdersDetails)
+                    .ThenInclude(c => c.Product)
+                        .ThenInclude(c => c.ProductImages)
+                .Include(c => c.OrdersDetails)
+                    .ThenInclude(c => c.Product)
+                        .ThenInclude(c => c.ProductSizes)
+                .AsQueryable();
+
+            var totalItems = await orders.CountAsync();
+            var items = await orders.OrderBy(c => c.Id)
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalItems);
         }
 
         public async Task<int> GetLastUserOrder(string userId)

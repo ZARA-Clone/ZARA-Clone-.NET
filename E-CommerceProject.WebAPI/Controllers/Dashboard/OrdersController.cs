@@ -1,5 +1,7 @@
-﻿using E_CommerceProject.Business.Dashborad.Orders;
+﻿using E_CommerceProject.Business.Brands.Dtos;
+using E_CommerceProject.Business.Dashborad.Orders;
 using E_CommerceProject.Business.Dashborad.Orders.Dtos;
+using E_CommerceProject.Business.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,7 +22,8 @@ namespace E_CommerceProject.WebAPI.Controllers.Dashboard
             _logger = logger;
         }
 
-        [HttpGet]
+        
+        [HttpGet("getAll")]
         public async Task<ActionResult<List<OrderReadDto>>> GetAllOrders()
         {
             _logger.LogInformation($"Get all orders");
@@ -40,6 +43,13 @@ namespace E_CommerceProject.WebAPI.Controllers.Dashboard
             }
 
             return Ok(orderDetails);
+        }
+        [HttpGet]
+        public async Task<ActionResult<PageList<OrderReadDto>>> Get(int pageIndex = 0, int pageSize = 10)
+        {
+            var result = await _ordersService.Get(pageIndex, pageSize);
+            _logger.LogInformation($"Get '{result.Items.Count}' products from '{result.TotalCount}'.");
+            return result;
         }
     }
 }

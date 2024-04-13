@@ -1,4 +1,6 @@
-﻿using E_CommerceProject.Business.Users.Dtos;
+﻿using E_CommerceProject.Business.Dashborad.Orders.Dtos;
+using E_CommerceProject.Business.Shared;
+using E_CommerceProject.Business.Users.Dtos;
 using E_CommerceProject.Business.Users.Interfaces;
 using E_CommerceProject.Models.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -41,8 +43,14 @@ namespace E_CommerceProject.WebAPI.Controllers.Dashboard
             }
             return Ok(item);
         }
-
         [HttpGet]
+        public async Task<ActionResult<PageList<UserDto>>> Get(int pageIndex = 0, int pageSize = 10)
+        {
+            var result = await _userService.Get(pageIndex, pageSize);
+            _logger.LogInformation($"Get '{result.Items.Count}' products from '{result.TotalCount}'.");
+            return result;
+        }
+        [HttpGet("getAll")]
         public async Task<ActionResult<List<UserDto>>> GetAllUsers()
         {
             _logger.LogInformation($"Get all products");
