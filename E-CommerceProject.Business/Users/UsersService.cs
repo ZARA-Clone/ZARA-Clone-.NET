@@ -31,6 +31,9 @@ namespace E_CommerceProject.Business.Users
                     {
                         Id = o.Id,
                         OrderDate = o.OrderDate,
+                        OriginalPrice = o.OrdersDetails
+                        .Sum(op => op.Price * op.Quantity),
+                        NetPrice = o.OrdersDetails.Sum(op => Math.Round((op.Price - (op.Price * (op.Product.Discount / 100))) * op.Quantity, 0)),
                     })
                 }).ToList();
 
@@ -55,6 +58,10 @@ namespace E_CommerceProject.Business.Users
                     {
                         Id = o.Id,
                         OrderDate = o.OrderDate,
+                        OriginalPrice = o.OrdersDetails
+                        .Sum(op => op.Price * op.Quantity),
+                        NetPrice = o.OrdersDetails
+                        .Sum(op => Math.Round((op.Price - (op.Price * (op.Product.Discount / 100))) * op.Quantity, 0)),
                     })
                 });
                 return result.ToList();
@@ -77,10 +84,16 @@ namespace E_CommerceProject.Business.Users
                     Email = item.Email,
                     UserName = item.UserName,
                     Address = item.Address,
+                    Country = item.Country,
+                    PhoneNumber= item.PhoneNumber,
                     Orders = item.Orders.Select(o => new UserDashboardOrderDto
                     {
                         Id = o.Id,
                         OrderDate = o.OrderDate,
+                        OriginalPrice = o.OrdersDetails
+                        .Sum(op => op.Price * op.Quantity),
+                        NetPrice = o.OrdersDetails.Sum(op => Math.Round((op.Price - (op.Price * (op.Product.Discount / 100))) * op.Quantity, 0)),
+
                     })
                 };
                 return userDto;

@@ -1,5 +1,4 @@
-﻿using E_CommerceProject.Business.Brands.Dtos;
-using E_CommerceProject.Business.Dashborad.Orders;
+﻿using E_CommerceProject.Business.Dashborad.Orders;
 using E_CommerceProject.Business.Dashborad.Orders.Dtos;
 using E_CommerceProject.Business.Shared;
 using Microsoft.AspNetCore.Authorization;
@@ -50,6 +49,20 @@ namespace E_CommerceProject.WebAPI.Controllers.Dashboard
             var result = await _ordersService.Get(pageIndex, pageSize);
             _logger.LogInformation($"Get '{result.Items.Count}' products from '{result.TotalCount}'.");
             return result;
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            _logger.LogInformation($"Delete order with id '{id}'");
+            var item = await _ordersService.GetOrderDetails(id);
+            if(item == null)
+            {
+                _logger.LogWarning($"There is no order with id: {id}");
+                return NotFound();
+            }
+            await _ordersService.Delete(id);
+            return NoContent();
         }
     }
 }

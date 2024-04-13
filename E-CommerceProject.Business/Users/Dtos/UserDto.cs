@@ -15,5 +15,7 @@
     {
         public int Id { get; set; }
         public DateTime OrderDate { get; set; } = DateTime.Now;
+        public decimal OriginalPrice { get; set; }
+        public decimal NetPrice { get; set; }
     }
 }

@@ -45,6 +45,8 @@ namespace E_CommerceProject.Business.Dashborad.Orders
                     OrderDate = o.OrderDate,
                     UserId = o.User.Id,
                     UserName = (o.User.UserName),
+                    Address = o.User.Address,
+                    Phone = o.User.PhoneNumber,
                     ProductCount = o.OrdersDetails.Count(),
                     TotalPrice = o.OrdersDetails
                     .Sum(op => Math.Round((op.Product.Price - (op.Product.Price * (op.Product.Discount / 100))) * op.Quantity, 0)),
@@ -77,9 +79,11 @@ namespace E_CommerceProject.Business.Dashborad.Orders
                     Price = op.Product.Price,
                     ImageUrl = op.Product.ProductImages.FirstOrDefault()?.Url ?? "",
                     Discount = op.Product.Discount,
-                    ProductId = op.ProductId
+                    ProductId = op.ProductId,
+                    BrandName = op.Product.Brand.Name
                 }).ToList(),
                 Phone = order.User.PhoneNumber,
+                Address = order.User.Address
             };
 
             return orderDetailsDto;

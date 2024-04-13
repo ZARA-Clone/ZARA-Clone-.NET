@@ -18,6 +18,8 @@ namespace E_CommerceProject.Infrastructure.Repositories.UserDashboardRepository
         {
             return await _dbContext.Set<ApplicationUser>()
                 .Include(c => c.Orders)
+                    .ThenInclude(c => c.OrdersDetails)
+                        .ThenInclude(c => c.Product)
                 .FirstOrDefaultAsync(c => c.Id == key);
         }
 
@@ -25,6 +27,8 @@ namespace E_CommerceProject.Infrastructure.Repositories.UserDashboardRepository
         {
             return await _dbContext.Set<ApplicationUser>()
                 .Include(c => c.Orders)
+                     .ThenInclude(c => c.OrdersDetails)
+                        .ThenInclude(c => c.Product)
                 .ToListAsync();
         }
 
@@ -32,6 +36,8 @@ namespace E_CommerceProject.Infrastructure.Repositories.UserDashboardRepository
         {
             var users = _dbContext.Set<ApplicationUser>()
                 .Include(c => c.Orders)
+                     .ThenInclude(c => c.OrdersDetails)
+                        .ThenInclude(c => c.Product)
                 .AsQueryable();
 
             var totalItems = await users.CountAsync();
