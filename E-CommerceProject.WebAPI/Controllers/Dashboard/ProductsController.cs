@@ -75,7 +75,7 @@ namespace E_CommerceProject.WebAPI.Controllers.Dashboard
                 _logger.LogError($"Adding product not valid with validation errors {result}");
                 foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError("", error);
+                    ModelState.AddModelError("messages", error);
                 }
                 return BadRequest(ModelState);
             }
@@ -102,7 +102,7 @@ namespace E_CommerceProject.WebAPI.Controllers.Dashboard
                     _logger.LogError($"updating product has been failed with errors {response.Errors}");
                     foreach (var error in response.Errors)
                     {
-                        ModelState.AddModelError("", error);
+                        ModelState.AddModelError("messages", error);
                     }
                     return BadRequest(ModelState);
                 }
@@ -130,7 +130,7 @@ namespace E_CommerceProject.WebAPI.Controllers.Dashboard
                     _logger.LogError($"Deleting product with id {id} has been failed with errors{response.Errors}");
                     foreach (var error in response.Errors)
                     {
-                        ModelState.AddModelError("", error);
+                        ModelState.AddModelError("messages", error);
                     }
                     return BadRequest(ModelState);
                 }

@@ -66,5 +66,12 @@ namespace E_CommerceProject.Infrastructure.Repositories.Products
             return (items, totalItems);
 
         }
+        public Task<bool> IsNameExist(Product entity)
+        {
+            return _dbContext.Set<Product>()
+                .AnyAsync(c => c.Id != entity.Id
+                        && c.BrandId != entity.BrandId
+                        && c.Name.Trim() == entity.Name.Trim());
+        }
     }
 }

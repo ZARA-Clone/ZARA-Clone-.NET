@@ -7,5 +7,7 @@ namespace E_CommerceProject.Infrastructure.Repositories.Products
     {
         Task<(List<Product> items, int totalItemsCount)> Get(string? name, int? brandId, decimal? minPrice
            , decimal? maxPrice, int pageIndex = 0, int pageSize = 10);
+
+        Task<bool> IsNameExist(Product entity);
     }
 }
